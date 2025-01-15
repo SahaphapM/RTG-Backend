@@ -1,0 +1,39 @@
+// Rest Client api handler
+
+@localhost = http://localhost:3000/users
+
+// get users
+### 
+get {{localhost}}
+
+// get user by id
+###
+get {{localhost}}/1
+
+
+// create user
+###
+post {{localhost}} HTTP/1.1
+content-type: application/json
+
+{
+    "name": "John Doe",
+    "position": "CEO",
+    "contact": "1234567890",
+    "email": "4Yp8P@example.com",
+    "role": "Manager"
+}
+
+###
+put {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "John Doe update 1",
+    "role": "Admin"
+}
+
+
+// delete user by id
+###
+delete {{localhost}}/1

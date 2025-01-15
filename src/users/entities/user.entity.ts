@@ -32,3 +32,8 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date; // Timestamp for when the record is last updated
 }
+
+export enum UserRoles {
+  ADMIN = 'Admin',
+  MANAGER = 'Manager',
+}
