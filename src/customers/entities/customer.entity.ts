@@ -17,11 +17,11 @@ export class Customer {
   @Column({ type: 'varchar', length: 255 })
   address: string; // Address of the customer
 
-  @Column({ type: 'varchar', length: 64 })
-  contact: string; // Contact information
+  @Column({ type: 'varchar', length: 64, nullable: true })
+  contact: string | null; // Allow contact to be null
 
   @Column({ type: 'varchar', length: 64, nullable: true })
-  email: string; // Optional email address for communication
+  email: string | null; // Optional email address for communication
 
   @CreateDateColumn()
   createdAt: Date; // Timestamp for when the record is created

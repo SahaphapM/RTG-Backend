@@ -11,6 +11,7 @@ import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 import { QuotationsModule } from './quotations/quotations.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     PurchaseOrdersModule,
     QuotationsModule,
     CertificatesModule,
+    ItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

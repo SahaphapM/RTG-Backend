@@ -18,7 +18,7 @@ export class User {
   position: string; // Position of the user
 
   @Column({ type: 'varchar', length: 64 })
-  contact: string; // Contact information
+  contact: string | null; // Contact information
 
   @Column({ type: 'varchar', length: 64, unique: true, nullable: true })
   email: string; // Email address

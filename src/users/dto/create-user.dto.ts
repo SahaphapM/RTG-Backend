@@ -1,4 +1,4 @@
-import { IsString, IsEmail, Length, IsEnum } from 'class-validator';
+import { IsString, IsEmail, Length, IsEnum, IsOptional } from 'class-validator';
 import { User, UserRoles } from '../entities/user.entity';
 
 export class CreateUserDto {
@@ -15,11 +15,12 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'Email must be a valid email address' })
   email: string;
 
+  @IsOptional()
   @IsString()
   @Length(8, 96, {
     message: 'Contact must be between 8 and 96 characters long',
   })
-  contact: string;
+  contact?: string;
 
   @IsEnum(UserRoles)
   @IsString()

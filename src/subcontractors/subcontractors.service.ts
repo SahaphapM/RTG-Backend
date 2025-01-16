@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Subcontractor } from './entities/subcontractor.entity';
 import { CreateSubcontractorDto } from './dto/create-subcontractor.dto';
 import { UpdateSubcontractorDto } from './dto/update-subcontractor.dto';
 
 @Injectable()
 export class SubcontractorsService {
-  create(createSubcontractorDto: CreateSubcontractorDto) {
-    return 'This action adds a new subcontractor';
+  constructor(
+    @InjectRepository(Subcontractor)
+    private subcontractorRepository: Repository<Subcontractor>,
+  ) {}
+
+  async findAll(): Promise<Subcontractor[]> {
+    return this.subcontractorRepository.find();
   }
 
-  findAll() {
-    return `This action returns all subcontractors`;
+  async findById(id: number): Promise<Subcontractor> {
+    const subcontractor = await this.subcontractorRepository.findOne({
+      where: { id },
+    });
+    if (!subcontractor) {
+      throw new NotFoundException(`Subcontractor with ID ${id} not found`);
+    }
+    return subcontractor;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subcontractor`;
+  async create(
+    createSubcontractorDto: CreateSubcontractorDto,
+  ): Promise<Subcontractor> {
+    const subcontractor = this.subcontractorRepository.create(
+      createSubcontractorDto,
+    );
+    return this.subcontractorRepository.save(subcontractor);
   }
 
-  update(id: number, updateSubcontractorDto: UpdateSubcontractorDto) {
-    return `This action updates a #${id} subcontractor`;
+  async update(
+    id: number,
+    updateSubcontractorDto: UpdateSubcontractorDto,
+  ): Promise<Subcontractor> {
+    const subcontractor = await this.findById(id);
+    const updatedSubcontractor = Object.assign(
+      subcontractor,
+      updateSubcontractorDto,
+    );
+    return this.subcontractorRepository.save(updatedSubcontractor);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subcontractor`;
+  async delete(id: number): Promise<void> {
+    const subcontractor = await this.findById(id);
+    await this.subcontractorRepository.remove(subcontractor);
   }
 }

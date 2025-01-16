@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { Customer } from './entities/customer.entity';
 import { CustomersService } from './customers.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { CreateCustomerDto } from './dto/create-customer.dto';
 
 @Controller('customers')
 export class CustomersController {
-  constructor(private readonly customersService: CustomersService) {}
-
-  @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customersService.create(createCustomerDto);
-  }
+  constructor(private readonly customerService: CustomersService) {}
 
   @Get()
-  findAll() {
-    return this.customersService.findAll();
+  async getAllCustomers(): Promise<Customer[]> {
+    return this.customerService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customersService.findOne(+id);
+  async getCustomerById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Customer> {
+    return this.customerService.findById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customersService.update(+id, updateCustomerDto);
+  @Post()
+  async createCustomer(
+    @Body() createCustomerDto: CreateCustomerDto,
+  ): Promise<Customer> {
+    return this.customerService.create(createCustomerDto);
+  }
+
+  @Put(':id')
+  async updateCustomer(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    return this.customerService.update(id, updateCustomerDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customersService.remove(+id);
+  async deleteCustomer(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.customerService.delete(id);
   }
 }

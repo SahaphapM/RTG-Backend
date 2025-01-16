@@ -1,0 +1,25 @@
+// get customer
+@localhost = http://localhost:3000/customers
+
+###
+get {{localhost}}/1 
+
+
+// create customer
+###
+post {{localhost}} HTTP/1.1
+content-type: application/json
+
+{  "id" : 1, "name": "John eeee", "address": "123 Street", "email": "john@example.com" }
+
+
+// update customer
+###
+put {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{ "addressss": "1234563437890 Street", "contact": "088888888", "email": "john@example.com" }
+
+// delete customer
+###
+delete {{localhost}}/1

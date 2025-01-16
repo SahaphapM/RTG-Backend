@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SubcontractorsService } from './subcontractors.service';
 import { CreateSubcontractorDto } from './dto/create-subcontractor.dto';
 import { UpdateSubcontractorDto } from './dto/update-subcontractor.dto';
+import { Subcontractor } from './entities/subcontractor.entity';
 
 @Controller('subcontractors')
 export class SubcontractorsController {
-  constructor(private readonly subcontractorsService: SubcontractorsService) {}
-
-  @Post()
-  create(@Body() createSubcontractorDto: CreateSubcontractorDto) {
-    return this.subcontractorsService.create(createSubcontractorDto);
-  }
+  constructor(private readonly subcontractorService: SubcontractorsService) {}
 
   @Get()
-  findAll() {
-    return this.subcontractorsService.findAll();
+  async getAllSubcontractors(): Promise<Subcontractor[]> {
+    return this.subcontractorService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subcontractorsService.findOne(+id);
+  async getSubcontractorById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Subcontractor> {
+    return this.subcontractorService.findById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubcontractorDto: UpdateSubcontractorDto) {
-    return this.subcontractorsService.update(+id, updateSubcontractorDto);
+  @Post()
+  async createSubcontractor(
+    @Body() createSubcontractorDto: CreateSubcontractorDto,
+  ): Promise<Subcontractor> {
+    return this.subcontractorService.create(createSubcontractorDto);
+  }
+
+  @Put(':id')
+  async updateSubcontractor(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSubcontractorDto: UpdateSubcontractorDto,
+  ): Promise<Subcontractor> {
+    return this.subcontractorService.update(id, updateSubcontractorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subcontractorsService.remove(+id);
+  async deleteSubcontractor(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.subcontractorService.delete(id);
   }
 }
