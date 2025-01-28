@@ -24,14 +24,14 @@ export class ProjectsService {
 
   async findAll(): Promise<Project[]> {
     return this.projectRepository.find({
-      relations: ['customer', 'projectItems'],
+      relations: ['customer'],
     });
   }
 
   async findById(id: number): Promise<Project> {
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: { projectItems: true },
+      relations: { projectItems: { item: true }, customer: true },
     });
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
@@ -132,6 +132,7 @@ export class ProjectsService {
         this.projectItemRepository.create({
           project,
           item,
+          price: dto.price,
           quantity: dto.quantity,
           totalPrice,
         }),
