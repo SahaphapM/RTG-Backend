@@ -1,5 +1,5 @@
 // Item api
-@localhost = http://localhost:3000/items
+@localhost = http://localhost:5000/items
 
 ###
 get {{localhost}}
@@ -12,8 +12,8 @@ post {{localhost}} HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Item 5",
-    "price": 50000
+    "name": "Scarp",
+    "price": 1000
 }
 
 ###

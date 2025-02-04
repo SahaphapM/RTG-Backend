@@ -15,13 +15,19 @@ import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'user123',
+    //   password: 'pass123',
+    //   database: 'mydatabase',
+    //   autoLoadEntities: true,
+    //   synchronize: true,
+    // }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'user123',
-      password: 'pass123',
-      database: 'mydatabase',
+      type: 'sqlite',
+      database: 'database.sqlite',
       autoLoadEntities: true,
       synchronize: true,
     }),

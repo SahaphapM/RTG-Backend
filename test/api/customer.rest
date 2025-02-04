@@ -1,8 +1,11 @@
 // get customer
-@localhost = http://localhost:3000/customers
+@localhost = http://localhost:5000/customers
 
 ###
 get {{localhost}}/1 
+
+###
+get {{localhost}}
 
 
 // create customer
@@ -10,7 +13,7 @@ get {{localhost}}/1
 post {{localhost}} HTTP/1.1
 content-type: application/json
 
-{  "id" : 1, "name": "John eeee", "address": "123 Street", "email": "john@example.com" }
+{ "name": "Angjel Joko", "address": "123 Street", "contact": "088888888", "email": "angjel@example.com" }
 
 
 // update customer

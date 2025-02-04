@@ -9,6 +9,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Reject requests with unknown properties
     }),
   );
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    origin: 'http://localhost:3000', // Allow Nuxt frontend
+    credentials: true,
+  });
+  await app.listen(process.env.PORT ?? 5000);
 }
 bootstrap();

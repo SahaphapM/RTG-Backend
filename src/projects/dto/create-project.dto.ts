@@ -29,6 +29,7 @@ export class CreateProjectDto {
   })
   number: string;
 
+  @IsOptional()
   @IsNumber()
   discount: number | null;
 

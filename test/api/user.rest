@@ -1,6 +1,6 @@
 // Rest Client api handler
 
-@localhost = http://localhost:3000/users
+@localhost = http://localhost:5000/users
 
 // get users
 ### 
@@ -17,11 +17,12 @@ post {{localhost}} HTTP/1.1
 content-type: application/json
 
 {
-    "name": "John Doe",
+    "name": "Jelaludin joko",
     "position": "CEO",
     "contact": "1234567890",
-    "email": "4Yp8P@example.com",
-    "role": "Manager"
+    "email": "jelaludinjoko@gmail.com",
+    "role": "Admin"
+
 }
 
 ###
@@ -37,3 +38,36 @@ content-type: application/json
 // delete user by id
 ###
 delete {{localhost}}/1
+
+
+/// give me random user json to create ////
+
+// user 1
+
+{
+    "name": "naruto Uzumaki",
+    "position": "CEO",
+    "contact": "1234567890",
+    "email": "narutoUzumaki@gmail.com",
+    "role": "Admin"
+}
+
+// user 2
+
+{
+    "name": "sasuke Uchiha",
+    "position": "CEO",
+    "contact": "1234567890",
+    "email": "sasukeUchiha@gmail.com",
+    "role": "Admin"
+}
+
+// user 3
+
+{
+    "name": "itachi Uchiha",
+    "position": "CEO",
+    "contact": "1234567890",
+    "email": "itachiUchiha@gmail.com",
+    "role": "Admin"
+}
