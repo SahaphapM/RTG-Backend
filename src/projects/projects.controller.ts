@@ -27,6 +27,7 @@ export class ProjectsController {
   async getProjectById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Project> {
+    console.log(id);
     return this.projectService.findById(id);
   }
 

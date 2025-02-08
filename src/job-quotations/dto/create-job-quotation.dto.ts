@@ -97,15 +97,11 @@ export class PaymentDetailDto {
 
   @IsOptional()
   @IsNumber()
-  quantity: number;
+  qty: number;
 
   @IsOptional()
   @IsNumber()
   unitPrice: number;
-
-  @IsOptional()
-  @IsNumber()
-  discount: number;
 
   @IsOptional()
   @IsNumber()
