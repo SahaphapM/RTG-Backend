@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -47,47 +51,62 @@ export class ProjectsService {
   }
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
-    const { customerId, projectItems, ...projectData } = createProjectDto;
+    try {
+      const { customerId, projectItems, ...projectData } = createProjectDto;
 
-    // Validate customer
-    const customer = await this.customerRepository.findOne({
-      where: { id: customerId },
-    });
-    if (!customer) {
-      throw new NotFoundException(`Customer with ID ${customerId} not found`);
-    }
-
-    // Validate items and prepare ProjectItems
-    const projectItemsList: ProjectItem[] = [];
-    for (const projectItem of projectItems) {
-      const item = await this.itemRepository.findOne({
-        where: { id: projectItem.itemId },
+      // Validate customer
+      const customer = await this.customerRepository.findOne({
+        where: { id: customerId },
       });
-      if (!item) {
-        throw new NotFoundException(
-          `Item with ID ${projectItem.itemId} not found`,
-        );
+      if (!customer) {
+        throw new NotFoundException(`Customer with ID ${customerId} not found`);
       }
 
-      const newProjectItem = await this.projectItemRepository.save({
-        item,
-        quantity: projectItem.quantity,
-        price: projectItem.price,
-        totalPrice: calculateTotalPrice(
-          projectItem.price,
-          projectItem.quantity,
-        ), // Calculate total price
-      });
-      projectItemsList.push(newProjectItem);
-    }
+      // Validate items and prepare ProjectItems
+      const projectItemsList: ProjectItem[] = [];
+      for (const projectItem of projectItems) {
+        const item = await this.itemRepository.findOne({
+          where: { id: projectItem.itemId },
+        });
+        if (!item) {
+          throw new NotFoundException(
+            `Item with ID ${projectItem.itemId} not found`,
+          );
+        }
 
-    // Create and save Project
-    const project = this.projectRepository.create({
-      ...projectData,
-      customer,
-      projectItems: projectItemsList,
-    });
-    return this.projectRepository.save(project);
+        const newProjectItem = await this.projectItemRepository.save({
+          item,
+          quantity: projectItem.quantity,
+          price: projectItem.price,
+          totalPrice: calculateTotalPrice(
+            projectItem.price,
+            projectItem.quantity,
+          ),
+        });
+        projectItemsList.push(newProjectItem);
+      }
+
+      // Create and save Project
+      const project = this.projectRepository.create({
+        ...projectData,
+        customer,
+        projectItems: projectItemsList,
+      });
+
+      return await this.projectRepository.save(project);
+    } catch (error) {
+      // Log the error for debugging purposes
+      console.error('Error creating project:', error.message);
+
+      // Return a specific error message based on the error type
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      } else {
+        throw new InternalServerErrorException(
+          'An unexpected error occurred while creating the project',
+        );
+      }
+    }
   }
 
   async update(

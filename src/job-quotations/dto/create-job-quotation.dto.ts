@@ -69,6 +69,18 @@ export class PaymentDto {
 
   @IsOptional()
   @IsString()
+  agentName: string;
+
+  @IsOptional()
+  @IsString()
+  agentEmail: string;
+
+  @IsOptional()
+  @IsString()
+  agentContact: string;
+
+  @IsOptional()
+  @IsString()
   ourTax: string;
 
   @IsOptional()
