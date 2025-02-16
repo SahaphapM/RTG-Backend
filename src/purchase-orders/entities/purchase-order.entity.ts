@@ -7,33 +7,65 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { OrderDetail } from './orderDetail.entity';
 
 @Entity('PurchaseOrder')
 export class PurchaseOrder {
   @PrimaryGeneratedColumn()
-  id: number; // Primary Key: Auto-incremented ID
+  id: number;
 
-  @Column({ type: 'varchar', length: 16 })
-  number: string; // Purchase order number
+  @Column({ type: 'varchar', length: 16, nullable: true })
+  number: string;
 
-  @ManyToOne(() => Subcontractor, (subcontractor) => subcontractor.id, {
+  @Column({ type: 'varchar', length: 16, nullable: true })
+  qtNumber: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  taxId: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  ourRef: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'date', nullable: true })
+  date: Date;
+
+  @ManyToOne(
+    () => Subcontractor,
+    (subcontractor) => subcontractor.purchaseOrders,
+    {
+      nullable: true,
+    },
+  )
+  subcontractor: Subcontractor;
+
+  @ManyToOne(() => Customer, (customer) => customer.purchaseOrders, {
     nullable: false,
   })
-  subcontractor: Subcontractor; // Foreign Key: Subcontractor for the purchase order
+  customer: Customer;
 
-  @Column({ type: 'varchar', length: 255 })
-  description: string; // Description of the purchase order
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.purchaseOrder, {
+    cascade: true,
+    eager: true,
+  })
+  orderDetails: OrderDetail[];
 
-  @Column({ type: 'date' })
-  date: Date; // Date of the purchase order
+  @Column({ type: 'decimal', scale: 2, nullable: true })
+  total: number;
 
-  @ManyToOne(() => Customer, (customer) => customer.id, { nullable: false })
-  customer: Customer; // Foreign Key: Customer associated with the purchase order
+  @Column({ type: 'decimal', scale: 2, nullable: true })
+  discount: number;
+
+  @Column({ type: 'decimal', scale: 2, nullable: true })
+  vat: number;
 
   @CreateDateColumn()
-  createdAt: Date; // Timestamp for when the record is created
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date; // Timestamp for when the record is last updated
+  updatedAt: Date;
 }
