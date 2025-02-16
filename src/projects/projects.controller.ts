@@ -8,6 +8,8 @@ import {
   Delete,
   ParseIntPipe,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -27,6 +29,7 @@ export class ProjectsController {
   async getProjectById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Project> {
+    console.log(id);
     return this.projectService.findById(id);
   }
 
@@ -34,6 +37,7 @@ export class ProjectsController {
   async createProject(
     @Body() createProjectDto: CreateProjectDto,
   ): Promise<Project> {
+    console.log('Received data:', createProjectDto);
     return this.projectService.create(createProjectDto);
   }
 

@@ -22,7 +22,6 @@ content-type: application/json
     "contact": "1234567890",
     "email": "jelaludinjoko@gmail.com",
     "role": "Admin"
-
 }
 
 ###
@@ -71,3 +70,6 @@ delete {{localhost}}/1
     "email": "itachiUchiha@gmail.com",
     "role": "Admin"
 }
+
+
+

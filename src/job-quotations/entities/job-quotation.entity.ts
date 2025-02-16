@@ -19,6 +19,15 @@ export class JobQuotation {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string; // Description of the job quotation
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentName: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentEmail: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentContact: string;
+
   @Column({ type: 'varchar', length: 16, nullable: true })
   customerRef: string; // Reference to the customer
 

@@ -1,0 +1,38 @@
+@localhost = http://localhost:5000/purchase-orders
+
+###
+# Get all purchase orders
+GET {{localhost}} HTTP/1.1
+
+###
+# Get a purchase order by ID
+GET {{localhost}}/1 HTTP/1.1
+
+###
+# Create a new purchase order
+POST {{localhost}} HTTP/1.1
+content-type: application/json
+
+{
+  "number": "PO12345",
+  "subcontractorId": 3,
+  "description": "Purchase order for construction materials",
+  "date": "2025-01-01",
+  "customerId": 1
+}
+
+###
+# Update a purchase order
+PATCH {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{
+  "number": "PO12345-UPDATED",
+  "description": "Updated purchase order description",
+  "date": "2025-01-02",
+  "subcontractorId": 0
+}
+
+###
+# Delete a purchase order
+DELETE {{localhost}}/1 HTTP/1.1

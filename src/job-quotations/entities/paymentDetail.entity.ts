@@ -15,18 +15,17 @@ export class PaymentDetail {
   @Column({ type: 'varchar', length: 255 })
   description: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   unitPrice: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   qty: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  discount: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   total: number;
 
-  @ManyToOne(() => Payment, (payment) => payment.paymentDetails)
+  @ManyToOne(() => Payment, (payment) => payment.paymentDetails, {
+    onDelete: 'CASCADE',
+  })
   payment: Payment;
 }

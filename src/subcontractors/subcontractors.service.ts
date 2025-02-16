@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Subcontractor } from './entities/subcontractor.entity';
@@ -13,7 +18,13 @@ export class SubcontractorsService {
   ) {}
 
   async findAll(): Promise<Subcontractor[]> {
-    return this.subcontractorRepository.find();
+    try {
+      return await this.subcontractorRepository.find();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to fetch subcontractors' + error.message,
+      );
+    }
   }
 
   async findById(id: number): Promise<Subcontractor> {
@@ -29,26 +40,50 @@ export class SubcontractorsService {
   async create(
     createSubcontractorDto: CreateSubcontractorDto,
   ): Promise<Subcontractor> {
-    const subcontractor = this.subcontractorRepository.create(
-      createSubcontractorDto,
-    );
-    return this.subcontractorRepository.save(subcontractor);
+    try {
+      const subcontractor = this.subcontractorRepository.create(
+        createSubcontractorDto,
+      );
+      return await this.subcontractorRepository.save(subcontractor);
+    } catch (error) {
+      if (error.code === '23505') {
+        // Duplicate entry (e.g., unique constraint violation)
+        throw new BadRequestException(
+          'Subcontractor already exists' + error.message,
+        );
+      }
+      throw new InternalServerErrorException(
+        'Failed to create subcontractor' + error.message,
+      );
+    }
   }
 
   async update(
     id: number,
     updateSubcontractorDto: UpdateSubcontractorDto,
   ): Promise<Subcontractor> {
-    const subcontractor = await this.findById(id);
-    const updatedSubcontractor = Object.assign(
-      subcontractor,
-      updateSubcontractorDto,
-    );
-    return this.subcontractorRepository.save(updatedSubcontractor);
+    try {
+      const subcontractor = await this.findById(id);
+      const updatedSubcontractor = Object.assign(
+        subcontractor,
+        updateSubcontractorDto,
+      );
+      return await this.subcontractorRepository.save(updatedSubcontractor);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to update subcontractor' + error.message,
+      );
+    }
   }
 
   async delete(id: number): Promise<void> {
-    const subcontractor = await this.findById(id);
-    await this.subcontractorRepository.remove(subcontractor);
+    try {
+      const subcontractor = await this.findById(id);
+      await this.subcontractorRepository.remove(subcontractor);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to delete subcontractor' + error.message,
+      );
+    }
   }
 }

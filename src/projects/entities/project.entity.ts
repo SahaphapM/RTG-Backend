@@ -33,9 +33,6 @@ export class Project {
   endDate: Date | null; // End date of the project, can be null
 
   @Column({ type: 'decimal', nullable: true })
-  discount: number | null; // Discount applied to the project
-
-  @Column({ type: 'decimal', nullable: true })
   totalProjectPrice: number | null; // Total price of the project
 
   @CreateDateColumn()

@@ -36,7 +36,6 @@ export class JobQuotationsService {
       where: { id },
       relations: ['payments'],
     });
-    console.log(jobQuotation);
     if (!jobQuotation) {
       throw new NotFoundException(`Job Quotation with ID ${id} not found`);
     }
@@ -61,7 +60,6 @@ export class JobQuotationsService {
     projectId: number,
     quotationData: CreateJobQuotationDto,
   ): Promise<JobQuotation> {
-    console.log(projectId);
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
@@ -113,7 +111,6 @@ export class JobQuotationsService {
       where: { id: paymentId },
       relations: { paymentDetails: true },
     });
-    console.log(payment);
     if (!payment) {
       throw new NotFoundException(`Payment with ID ${paymentId} not found`);
     } else {
@@ -125,8 +122,10 @@ export class JobQuotationsService {
     jobQuotationId: number,
     paymentData: PaymentDto,
   ): Promise<Payment> {
+    console.log('paymentDetails', paymentData.paymentDetails);
     const jobQuotation = await this.findById(jobQuotationId);
     const payment = this.paymentRepository.create(paymentData);
+
     payment.jobQuotation = jobQuotation;
 
     // Save payment first
@@ -152,8 +151,19 @@ export class JobQuotationsService {
     if (!payment) {
       throw new NotFoundException(`Payment with ID ${paymentId} not found`);
     }
+
     Object.assign(payment, paymentData);
-    return this.paymentRepository.save(payment);
+
+    await this.paymentRepository.save(payment);
+
+    // Then create and save payment details
+    for (const detail of paymentData.paymentDetails) {
+      const paymentDetail = this.paymentDetailRepository.create(detail);
+      paymentDetail.payment = payment; // Use savedPayment, which now has an ID
+      await this.paymentDetailRepository.save(paymentDetail);
+    }
+
+    return await this.findPaymentById(paymentId);
   }
 
   async deletePayment(paymentId: number): Promise<void> {

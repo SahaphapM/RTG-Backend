@@ -37,7 +37,7 @@ export class SubcontractorsController {
     return this.subcontractorService.create(createSubcontractorDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateSubcontractor(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSubcontractorDto: UpdateSubcontractorDto,

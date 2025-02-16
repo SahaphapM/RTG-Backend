@@ -2,12 +2,12 @@ import { IsString, IsEmail, IsOptional, Length } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
-  @Length(3, 32, { message: 'Name must be between 3 and 32 characters long' })
+  @Length(0, 32, { message: 'Name must be between 3 and 32 characters long' })
   name: string;
 
   @IsOptional()
   @IsString()
-  @Length(5, 255, {
+  @Length(0, 255, {
     message: 'Address must be between 5 and 255 characters long',
   })
   address?: string;
@@ -20,6 +20,6 @@ export class CreateCustomerDto {
   contact?: string;
 
   @IsOptional()
-  @IsEmail({}, { message: 'Email must be a valid email address' })
+  // @IsEmail({}, { message: 'Email must be a valid email address' })
   email?: string;
 }

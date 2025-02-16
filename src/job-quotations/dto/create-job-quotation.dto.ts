@@ -69,6 +69,18 @@ export class PaymentDto {
 
   @IsOptional()
   @IsString()
+  agentName: string;
+
+  @IsOptional()
+  @IsString()
+  agentEmail: string;
+
+  @IsOptional()
+  @IsString()
+  agentContact: string;
+
+  @IsOptional()
+  @IsString()
   ourTax: string;
 
   @IsOptional()
@@ -97,15 +109,11 @@ export class PaymentDetailDto {
 
   @IsOptional()
   @IsNumber()
-  quantity: number;
+  qty: number;
 
   @IsOptional()
   @IsNumber()
   unitPrice: number;
-
-  @IsOptional()
-  @IsNumber()
-  discount: number;
 
   @IsOptional()
   @IsNumber()
