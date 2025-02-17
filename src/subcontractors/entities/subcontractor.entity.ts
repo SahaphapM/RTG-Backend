@@ -1,3 +1,4 @@
+import { Certificate } from 'src/certificates/entities/certificate.entity';
 import { PurchaseOrder } from 'src/purchase-orders/entities/purchase-order.entity';
 import {
   Entity,
@@ -33,6 +34,9 @@ export class Subcontractor {
     (purchaseOrder) => purchaseOrder.subcontractor,
   )
   purchaseOrders: PurchaseOrder[];
+
+  @OneToMany(() => Certificate, (certificate) => certificate.subcontractor)
+  certificates: Certificate[];
 
   @CreateDateColumn()
   createdAt: Date; // Timestamp for when the record is created

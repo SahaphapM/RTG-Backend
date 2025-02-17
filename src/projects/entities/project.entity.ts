@@ -11,6 +11,7 @@ import {
 import { ProjectItem } from './project-item.entity';
 import { Expose } from 'class-transformer';
 import { JobQuotation } from 'src/job-quotations/entities/job-quotation.entity';
+import { Certificate } from 'src/certificates/entities/certificate.entity';
 
 @Entity('Project')
 export class Project {
@@ -50,4 +51,7 @@ export class Project {
 
   @OneToMany(() => JobQuotation, (jobQuotation) => jobQuotation.project)
   jobQuotations: JobQuotation[];
+
+  @OneToMany(() => Certificate, (certificate) => certificate.project)
+  certificates: Certificate[];
 }

@@ -7,23 +7,32 @@ export class Certificate {
   @PrimaryGeneratedColumn()
   id: number; // Primary Key: Auto-incremented ID
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string; // Description of the certificate
 
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   name: string; // Name of the certificate
 
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: 'date', nullable: true })
+  date: Date; // Date of the certificate
+
+  @Column({ type: 'varchar', length: 64, nullable: true })
   type: string; // Type of the certificate
 
   @Column({ type: 'varchar', length: 255 })
   file: string; // File path of the certificate
 
-  @ManyToOne(() => Project, (project) => project.id, { nullable: false })
+  @ManyToOne(() => Project, (project) => project.certificates, {
+    nullable: true,
+  })
   project: Project; // Foreign Key: Project associated with the certificate
 
-  @ManyToOne(() => Subcontractor, (subcontractor) => subcontractor.id, {
-    nullable: false,
-  })
+  @ManyToOne(
+    () => Subcontractor,
+    (subcontractor) => subcontractor.certificates,
+    {
+      nullable: true,
+    },
+  )
   subcontractor: Subcontractor; // Foreign Key: Subcontractor providing the certificate
 }
