@@ -83,7 +83,10 @@ export class CertificatesService {
 
   findOne(id: number) {
     try {
-      return this.certificateRepository.findOne({ where: { id } });
+      return this.certificateRepository.findOne({
+        where: { id },
+        relations: { project: true, subcontractor: true },
+      });
     } catch (error) {
       throw new InternalServerErrorException(
         'Certificate not found with this id: ' +
