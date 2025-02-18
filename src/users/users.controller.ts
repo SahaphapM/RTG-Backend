@@ -7,20 +7,27 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  ValidationPipe,
+  UsePipes,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserQueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get()
-  async getAllUsers(): Promise<User[]> {
-    return this.userService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(@Query() query: UserQueryDto) {
+    console.log(query);
+    const users = await this.userService.findAll(query);
+    console.log(users);
+    return users;
   }
-
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.userService.findById(id);
