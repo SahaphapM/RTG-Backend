@@ -1,7 +1,7 @@
 import { IsInt, IsOptional, IsString, IsIn, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class UserQueryDto {
+export class QueryDto {
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
   @IsInt()

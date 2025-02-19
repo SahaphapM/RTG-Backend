@@ -8,19 +8,24 @@ import {
   Delete,
   Put,
   ParseIntPipe,
+  ValidationPipe,
+  UsePipes,
+  Query,
 } from '@nestjs/common';
 import { SubcontractorsService } from './subcontractors.service';
 import { CreateSubcontractorDto } from './dto/create-subcontractor.dto';
 import { UpdateSubcontractorDto } from './dto/update-subcontractor.dto';
 import { Subcontractor } from './entities/subcontractor.entity';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('subcontractors')
 export class SubcontractorsController {
   constructor(private readonly subcontractorService: SubcontractorsService) {}
 
   @Get()
-  async getAllSubcontractors(): Promise<Subcontractor[]> {
-    return this.subcontractorService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getAllSubcontractors(@Query() query: QueryDto) {
+    return this.subcontractorService.findAll(query);
   }
 
   @Get(':id')

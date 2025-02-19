@@ -14,7 +14,7 @@ import {
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserQueryDto } from 'src/paginations/pagination.dto';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('users')
 export class UsersController {
@@ -22,12 +22,13 @@ export class UsersController {
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
-  async findAll(@Query() query: UserQueryDto) {
+  async findAll(@Query() query: QueryDto) {
     console.log(query);
     const users = await this.userService.findAll(query);
     console.log(users);
     return users;
   }
+
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.userService.findById(id);

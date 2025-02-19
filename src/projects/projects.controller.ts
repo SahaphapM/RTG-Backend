@@ -10,19 +10,23 @@ import {
   Put,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectService: ProjectsService) {}
 
   @Get()
-  async getAllProjects(): Promise<Project[]> {
-    return this.projectService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(@Query() query: QueryDto) {
+    console.log(query);
+    return await this.projectService.findAll(query);
   }
 
   @Get(':id')

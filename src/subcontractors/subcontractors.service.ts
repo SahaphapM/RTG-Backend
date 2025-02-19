@@ -5,10 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Subcontractor } from './entities/subcontractor.entity';
 import { CreateSubcontractorDto } from './dto/create-subcontractor.dto';
 import { UpdateSubcontractorDto } from './dto/update-subcontractor.dto';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class SubcontractorsService {
@@ -17,14 +18,23 @@ export class SubcontractorsService {
     private subcontractorRepository: Repository<Subcontractor>,
   ) {}
 
-  async findAll(): Promise<Subcontractor[]> {
-    try {
-      return await this.subcontractorRepository.find();
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Failed to fetch subcontractors' + error.message,
-      );
-    }
+  async findAll(query: QueryDto) {
+    const { page, limit, search, sortBy, order } = query;
+
+    const [data, total] = await this.subcontractorRepository.findAndCount({
+      where: search ? { name: Like(`%${search}%`) } : {}, // Search by name
+      order: { [sortBy]: order }, // Sorting
+      skip: (page - 1) * limit, // Pagination start index
+      take: limit, // Number of results per page
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findById(id: number): Promise<Subcontractor> {

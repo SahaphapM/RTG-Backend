@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserQueryDto } from 'src/paginations/pagination.dto';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +12,7 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  async findAll(query: UserQueryDto) {
+  async findAll(query: QueryDto) {
     const { page, limit, search, sortBy, order } = query;
 
     const [data, total] = await this.userRepository.findAndCount({

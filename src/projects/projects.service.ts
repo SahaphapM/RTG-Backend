@@ -6,12 +6,13 @@ import {
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
 import { Customer } from 'src/customers/entities/customer.entity';
 import { ProjectItem } from './entities/project-item.entity';
 import { Item } from 'src/items/entities/item.entity';
 import { plainToInstance } from 'class-transformer';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -26,10 +27,40 @@ export class ProjectsService {
     private customerRepository: Repository<Customer>,
   ) {}
 
-  async findAll(): Promise<Project[]> {
-    return this.projectRepository.find({
-      relations: ['customer'],
-    });
+  async findAll(query: QueryDto) {
+    try {
+      const { page, limit, search, sortBy, order } = query;
+
+      const whereCondition = search
+        ? [
+            { number: Like(`%${search}%`) }, // Match number
+            { name: Like(`%${search}%`) }, // Match name
+            { customer: { name: Like(`%${search}%`) } }, // Match subcontractor name
+          ]
+        : [];
+
+      const [data, total] = await this.projectRepository.findAndCount({
+        where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists
+        order: { [sortBy]: order }, // Sorting
+        skip: (page - 1) * limit, // Pagination start index
+        take: limit, // Number of results per page
+        relations: {
+          customer: true,
+        },
+      });
+
+      return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to fetch purchase orders: ' + error.message,
+      );
+    }
   }
 
   async findById(id: number): Promise<Project> {

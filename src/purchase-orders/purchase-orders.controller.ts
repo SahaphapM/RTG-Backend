@@ -7,18 +7,25 @@ import {
   Param,
   Delete,
   Put,
+  UsePipes,
+  ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { PurchaseOrdersService } from './purchase-orders.service';
 import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
 import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
 import { PurchaseOrder } from './entities/purchase-order.entity';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('purchase-orders')
 export class PurchaseOrdersController {
   constructor(private readonly purchaseOrdersService: PurchaseOrdersService) {}
+
   @Get()
-  async findAll(): Promise<PurchaseOrder[]> {
-    return this.purchaseOrdersService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(@Query() query: QueryDto) {
+    console.log(query);
+    return await this.purchaseOrdersService.findAll(query);
   }
 
   @Get(':id')

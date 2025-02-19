@@ -6,12 +6,13 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { PurchaseOrder } from './entities/purchase-order.entity';
 import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
 import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
 import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
 import { Customer } from 'src/customers/entities/customer.entity';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class PurchaseOrdersService {
@@ -24,17 +25,38 @@ export class PurchaseOrdersService {
     private readonly customerRepository: Repository<Customer>,
   ) {}
 
-  async findAll(): Promise<PurchaseOrder[]> {
+  async findAll(query: QueryDto) {
     try {
-      return await this.purchaseOrderRepository.find({
+      const { page, limit, search, sortBy, order } = query;
+
+      const whereCondition = search
+        ? [
+            { number: Like(`%${search}%`) }, // Match number
+            { subcontractor: { name: Like(`%${search}%`) } }, // Match subcontractor name
+          ]
+        : [];
+
+      const [data, total] = await this.purchaseOrderRepository.findAndCount({
+        where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists
+        order: { [sortBy]: order }, // Sorting
+        skip: (page - 1) * limit, // Pagination start index
+        take: limit, // Number of results per page
         relations: {
           subcontractor: true,
           customer: true,
         },
       });
+
+      return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
     } catch (error) {
       throw new InternalServerErrorException(
-        'Failed to fetch purchase orders' + error.message,
+        'Failed to fetch purchase orders: ' + error.message,
       );
     }
   }
