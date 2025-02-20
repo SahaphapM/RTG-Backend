@@ -33,10 +33,14 @@ export class ProjectItem {
   @UpdateDateColumn()
   updatedAt: Date; // Timestamp for when the record is last updated
 
-  @ManyToOne(() => Project, (project) => project.projectItems)
-  @Exclude() // Exclude project reference to prevent circular JSON issue
+  @ManyToOne(() => Project, (project) => project.projectItems, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   project: Project; // Foreign Key: Project associated with the item
 
-  @ManyToOne(() => Item, (item) => item.projectItems, { nullable: false })
+  @ManyToOne(() => Item, (item) => item.projectItems, {
+    cascade: true,
+  })
   item: Item; // Foreign Key: Item associated with the project
 }

@@ -1,3 +1,4 @@
+import { Project } from 'src/projects/entities/project.entity';
 import { PurchaseOrder } from 'src/purchase-orders/entities/purchase-order.entity';
 import {
   Entity,
@@ -27,6 +28,9 @@ export class Customer {
 
   @OneToMany(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.customer)
   purchaseOrders: PurchaseOrder[];
+
+  @OneToMany(() => Project, (project) => project.customer, { cascade: false })
+  projects: Project[];
 
   @CreateDateColumn()
   createdAt: Date; // Timestamp for when the record is created

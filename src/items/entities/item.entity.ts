@@ -12,6 +12,9 @@ export class Item {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @OneToMany(() => ProjectItem, (projectItem) => projectItem.item)
+  @OneToMany(() => ProjectItem, (projectItem) => projectItem.item, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   projectItems: ProjectItem[];
 }

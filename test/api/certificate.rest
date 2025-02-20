@@ -11,13 +11,14 @@ Content-Type: application/json
   "name": "Project Certificate",
   "description": "This is a test certificate",
   "type": "Technical",
+  "date": "2020-01-01",
   "projectId": 1,
   "subcontractorId": 3
 }
 
 
 ### Upload certificate PDF with additional fields
-POST {{localhost}}/upload/15 HTTP/1.1
+POST {{localhost}}/upload/16 HTTP/1.1
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary

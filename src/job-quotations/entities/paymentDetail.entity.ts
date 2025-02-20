@@ -26,6 +26,7 @@ export class PaymentDetail {
 
   @ManyToOne(() => Payment, (payment) => payment.paymentDetails, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   payment: Payment;
 }

@@ -62,11 +62,15 @@ export class JobQuotation {
   paymentMethod: string | null; // Payment method for the project
 
   @ManyToOne(() => Project, (project) => project.jobQuotations, {
-    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   project: Project; // Foreign Key: Project associated with the quotation
 
-  @OneToMany(() => Payment, (payment) => payment.jobQuotation)
+  @OneToMany(() => Payment, (payment) => payment.jobQuotation, {
+    nullable: true,
+    cascade: true,
+  })
   payments: Payment[];
 }
 

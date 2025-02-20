@@ -42,16 +42,27 @@ export class Project {
   @UpdateDateColumn()
   updatedAt: Date; // Timestamp for when the record is last updated
 
-  @ManyToOne(() => Customer, (customer) => customer.id, { nullable: false })
+  @ManyToOne(() => Customer, (customer) => customer.id, {
+    cascade: true,
+    nullable: true,
+  })
   customer: Customer; // Foreign Key: Customer associated with the project
 
-  @OneToMany(() => ProjectItem, (projectItem) => projectItem.project)
-  @Expose() // Ensure projectItems are included, but without circular reference
+  @OneToMany(() => ProjectItem, (projectItem) => projectItem.project, {
+    cascade: true,
+    nullable: true,
+    // eager: true,
+  })
   projectItems: ProjectItem[];
 
-  @OneToMany(() => JobQuotation, (jobQuotation) => jobQuotation.project)
+  @OneToMany(() => JobQuotation, (jobQuotation) => jobQuotation.project, {
+    nullable: true,
+    cascade: true,
+  })
   jobQuotations: JobQuotation[];
 
-  @OneToMany(() => Certificate, (certificate) => certificate.project)
+  @OneToMany(() => Certificate, (certificate) => certificate.project, {
+    nullable: true,
+  })
   certificates: Certificate[];
 }

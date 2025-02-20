@@ -65,10 +65,14 @@ export class Payment {
   // ✅ Relation to JobQuotation (Many Payments belong to One JobQuotation)
   @ManyToOne(() => JobQuotation, (jobQuotation) => jobQuotation.payments, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   jobQuotation: JobQuotation;
 
   // ✅ Relation to PaymentDetails (One Payment has Many PaymentDetails)
-  @OneToMany(() => PaymentDetail, (paymentDetail) => paymentDetail.payment)
+  @OneToMany(() => PaymentDetail, (paymentDetail) => paymentDetail.payment, {
+    nullable: true,
+    cascade: true,
+  })
   paymentDetails: PaymentDetail[];
 }

@@ -55,6 +55,10 @@ export class ProjectsController {
 
   @Delete(':id')
   async deleteProject(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.projectService.delete(id);
+    try {
+      await this.projectService.delete(id);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

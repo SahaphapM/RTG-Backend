@@ -208,9 +208,14 @@ export class ProjectsService {
     return this.projectRepository.save(project);
   }
 
-  async delete(id: number): Promise<void> {
-    const project = await this.findById(id);
-    await this.projectRepository.remove(project);
+  async delete(id: number) {
+    try {
+      await this.projectRepository.delete(id);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to delete project: ' + error.message,
+      );
+    }
   }
 }
 
