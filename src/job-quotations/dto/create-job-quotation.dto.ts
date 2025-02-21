@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PaymentMethods } from '../entities/job-quotation.entity';
+import { InvoiceMethods } from '../entities/job-quotation.entity';
 
 export class CreateJobQuotationDto {
   @IsOptional()
@@ -21,7 +21,7 @@ export class CreateJobQuotationDto {
 
   @IsOptional()
   @IsString()
-  paymentTerms: string;
+  invoiceTerms: string;
 
   @IsOptional()
   @IsString()
@@ -48,17 +48,17 @@ export class CreateJobQuotationDto {
   message: string;
 
   @IsOptional()
-  @IsEnum(PaymentMethods)
-  paymentMethod: PaymentMethods;
+  @IsEnum(InvoiceMethods)
+  invoiceMethod: InvoiceMethods;
 
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => PaymentDto)
-  payments?: PaymentDto[];
+  @Type(() => InvoiceDto)
+  invoices?: InvoiceDto[];
 }
 
-export class PaymentDto {
+export class InvoiceDto {
   @IsOptional()
   @IsNumber()
   price: number;
@@ -96,13 +96,13 @@ export class PaymentDto {
   paidDate: Date;
 
   @IsOptional()
-  @Type(() => PaymentDetailDto)
+  @Type(() => InvoiceDetailDto)
   @IsArray()
   @ValidateNested({ each: true })
-  paymentDetails?: PaymentDetailDto[];
+  invoiceDetails?: InvoiceDetailDto[];
 }
 
-export class PaymentDetailDto {
+export class InvoiceDetailDto {
   @IsOptional()
   @IsString()
   description: string;

@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import {
   CreateJobQuotationDto,
-  PaymentDto,
+  InvoiceDto,
 } from './dto/create-job-quotation.dto';
 import { UpdateJobQuotationDto } from './dto/update-job-quotation.dto';
 import { JobQuotationsService } from './job-quotations.service';
 import { JobQuotation } from './entities/job-quotation.entity';
-import { Payment } from './entities/payment.entity';
+import { Invoice } from './entities/invoice.entity';
 
 @Controller('job-quotations')
 export class JobQuotationsController {
@@ -64,44 +64,44 @@ export class JobQuotationsController {
     return this.jobQuotationService.delete(id);
   }
 
-  ////////////// Payments //////////////
+  ////////////// Invoices //////////////
 
-  @Get(':id/payments')
-  async getAllPayments(
+  @Get(':id/invoices')
+  async getAllInvoices(
     @Param('id', ParseIntPipe) jobQuotationId: number,
-  ): Promise<Payment[]> {
-    return this.jobQuotationService.findAllPaymentsByJobQuotation(
+  ): Promise<Invoice[]> {
+    return this.jobQuotationService.findAllInvoicesByJobQuotation(
       jobQuotationId,
     );
   }
 
-  @Post(':id/payments')
-  async createPayment(
+  @Post(':id/invoices')
+  async createInvoice(
     @Param('id', ParseIntPipe) jobQuotationId: number,
-    @Body() paymentData: PaymentDto,
-  ): Promise<Payment> {
-    return this.jobQuotationService.createPayment(jobQuotationId, paymentData);
+    @Body() invoiceData: InvoiceDto,
+  ): Promise<Invoice> {
+    return this.jobQuotationService.createInvoice(jobQuotationId, invoiceData);
   }
 
-  @Get('payments/:id')
-  async getPaymentById(
-    @Param('id', ParseIntPipe) paymentId: number,
-  ): Promise<Payment> {
-    return this.jobQuotationService.findPaymentById(paymentId);
+  @Get('invoices/:id')
+  async getInvoiceById(
+    @Param('id', ParseIntPipe) invoiceId: number,
+  ): Promise<Invoice> {
+    return this.jobQuotationService.findInvoiceById(invoiceId);
   }
 
-  @Put('payments/:paymentId')
-  async updatePayment(
-    @Param('paymentId', ParseIntPipe) paymentId: number,
-    @Body() paymentData: PaymentDto,
-  ): Promise<Payment> {
-    return this.jobQuotationService.updatePayment(paymentId, paymentData);
+  @Put('invoices/:invoiceId')
+  async updateInvoice(
+    @Param('invoiceId', ParseIntPipe) invoiceId: number,
+    @Body() invoiceData: InvoiceDto,
+  ): Promise<Invoice> {
+    return this.jobQuotationService.updateInvoice(invoiceId, invoiceData);
   }
 
-  @Delete('payments/:paymentId')
-  async deletePayment(
-    @Param('paymentId', ParseIntPipe) paymentId: number,
+  @Delete('invoices/:invoiceId')
+  async deleteInvoice(
+    @Param('invoiceId', ParseIntPipe) invoiceId: number,
   ): Promise<void> {
-    return this.jobQuotationService.deletePayment(paymentId);
+    return this.jobQuotationService.deleteInvoice(invoiceId);
   }
 }

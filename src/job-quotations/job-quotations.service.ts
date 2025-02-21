@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
   CreateJobQuotationDto,
-  PaymentDto,
+  InvoiceDto,
 } from './dto/create-job-quotation.dto';
 import { UpdateJobQuotationDto } from './dto/update-job-quotation.dto';
 import { JobQuotation } from './entities/job-quotation.entity';
-import { Payment } from './entities/payment.entity';
+import { Invoice } from './entities/invoice.entity';
 import { Project } from 'src/projects/entities/project.entity';
-import { PaymentDetail } from './entities/paymentDetail.entity';
+import { InvoiceDetail } from './entities/invoiceDetail.entity';
 
 @Injectable()
 export class JobQuotationsService {
@@ -17,11 +17,11 @@ export class JobQuotationsService {
     @InjectRepository(JobQuotation)
     private jobQuotationRepository: Repository<JobQuotation>,
 
-    @InjectRepository(Payment)
-    private paymentRepository: Repository<Payment>,
+    @InjectRepository(Invoice)
+    private invoiceRepository: Repository<Invoice>,
 
-    @InjectRepository(PaymentDetail)
-    private paymentDetailRepository: Repository<PaymentDetail>,
+    @InjectRepository(InvoiceDetail)
+    private invoiceDetailRepository: Repository<InvoiceDetail>,
 
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
@@ -34,7 +34,7 @@ export class JobQuotationsService {
   async findById(id: number): Promise<JobQuotation> {
     const jobQuotation = await this.jobQuotationRepository.findOne({
       where: { id },
-      relations: ['payments'],
+      relations: ['invoices'],
     });
     if (!jobQuotation) {
       throw new NotFoundException(`Job Quotation with ID ${id} not found`);
@@ -45,7 +45,7 @@ export class JobQuotationsService {
   async findByProjectId(id: number): Promise<JobQuotation[]> {
     const jobQuotations = await this.jobQuotationRepository.find({
       where: { project: { id } },
-      relations: ['payments'],
+      relations: ['invoices'],
     });
 
     if (!jobQuotations) {
@@ -94,85 +94,85 @@ export class JobQuotationsService {
     await this.jobQuotationRepository.remove(jobQuotation);
   }
 
-  ////////////// Payments //////////////
+  ////////////// Invoices //////////////
 
-  async findAllPaymentsByJobQuotation(
+  async findAllInvoicesByJobQuotation(
     jobQuotationId: number,
-  ): Promise<Payment[]> {
-    const payments = await this.paymentRepository.find({
+  ): Promise<Invoice[]> {
+    const invoices = await this.invoiceRepository.find({
       where: { jobQuotation: { id: jobQuotationId } },
-      relations: { paymentDetails: true },
+      relations: { invoiceDetails: true },
     });
-    return payments;
+    return invoices;
   }
 
-  async findPaymentById(paymentId: number): Promise<Payment> {
-    const payment = await this.paymentRepository.findOne({
-      where: { id: paymentId },
-      relations: { paymentDetails: true },
+  async findInvoiceById(invoiceId: number): Promise<Invoice> {
+    const invoice = await this.invoiceRepository.findOne({
+      where: { id: invoiceId },
+      relations: { invoiceDetails: true },
     });
-    if (!payment) {
-      throw new NotFoundException(`Payment with ID ${paymentId} not found`);
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with ID ${invoiceId} not found`);
     } else {
-      return payment;
+      return invoice;
     }
   }
 
-  async createPayment(
+  async createInvoice(
     jobQuotationId: number,
-    paymentData: PaymentDto,
-  ): Promise<Payment> {
-    console.log('paymentDetails', paymentData.paymentDetails);
+    invoiceData: InvoiceDto,
+  ): Promise<Invoice> {
+    console.log('invoiceDetails', invoiceData.invoiceDetails);
     const jobQuotation = await this.findById(jobQuotationId);
-    const payment = this.paymentRepository.create(paymentData);
+    const invoice = this.invoiceRepository.create(invoiceData);
 
-    payment.jobQuotation = jobQuotation;
+    invoice.jobQuotation = jobQuotation;
 
-    // Save payment first
-    const savedPayment = await this.paymentRepository.save(payment);
+    // Save invoice first
+    const savedInvoice = await this.invoiceRepository.save(invoice);
 
-    // Then create and save payment details
-    for (const detail of paymentData.paymentDetails) {
-      const paymentDetail = this.paymentDetailRepository.create(detail);
-      paymentDetail.payment = savedPayment; // Use savedPayment, which now has an ID
-      await this.paymentDetailRepository.save(paymentDetail);
+    // Then create and save invoice details
+    for (const detail of invoiceData.invoiceDetails) {
+      const invoiceDetail = this.invoiceDetailRepository.create(detail);
+      invoiceDetail.invoice = savedInvoice; // Use savedInvoice, which now has an ID
+      await this.invoiceDetailRepository.save(invoiceDetail);
     }
 
-    return await this.findPaymentById(savedPayment.id);
+    return await this.findInvoiceById(savedInvoice.id);
   }
 
-  async updatePayment(
-    paymentId: number,
-    paymentData: PaymentDto,
-  ): Promise<Payment> {
-    const payment = await this.paymentRepository.findOne({
-      where: { id: paymentId },
+  async updateInvoice(
+    invoiceId: number,
+    invoiceData: InvoiceDto,
+  ): Promise<Invoice> {
+    const invoice = await this.invoiceRepository.findOne({
+      where: { id: invoiceId },
     });
-    if (!payment) {
-      throw new NotFoundException(`Payment with ID ${paymentId} not found`);
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with ID ${invoiceId} not found`);
     }
 
-    Object.assign(payment, paymentData);
+    Object.assign(invoice, invoiceData);
 
-    await this.paymentRepository.save(payment);
+    await this.invoiceRepository.save(invoice);
 
-    // Then create and save payment details
-    for (const detail of paymentData.paymentDetails) {
-      const paymentDetail = this.paymentDetailRepository.create(detail);
-      paymentDetail.payment = payment; // Use savedPayment, which now has an ID
-      await this.paymentDetailRepository.save(paymentDetail);
+    // Then create and save invoice details
+    for (const detail of invoiceData.invoiceDetails) {
+      const invoiceDetail = this.invoiceDetailRepository.create(detail);
+      invoiceDetail.invoice = invoice; // Use savedInvoice, which now has an ID
+      await this.invoiceDetailRepository.save(invoiceDetail);
     }
 
-    return await this.findPaymentById(paymentId);
+    return await this.findInvoiceById(invoiceId);
   }
 
-  async deletePayment(paymentId: number): Promise<void> {
-    const payment = await this.paymentRepository.findOne({
-      where: { id: paymentId },
+  async deleteInvoice(invoiceId: number): Promise<void> {
+    const invoice = await this.invoiceRepository.findOne({
+      where: { id: invoiceId },
     });
-    if (!payment) {
-      throw new NotFoundException(`Payment with ID ${paymentId} not found`);
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with ID ${invoiceId} not found`);
     }
-    await this.paymentRepository.remove(payment);
+    await this.invoiceRepository.remove(invoice);
   }
 }

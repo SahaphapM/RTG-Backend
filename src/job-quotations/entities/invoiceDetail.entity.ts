@@ -5,10 +5,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Payment } from './payment.entity';
+import { Invoice } from './invoice.entity';
 
-@Entity('paymentDetail')
-export class PaymentDetail {
+@Entity('invoiceDetail')
+export class InvoiceDetail {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,9 +24,9 @@ export class PaymentDetail {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   total: number;
 
-  @ManyToOne(() => Payment, (payment) => payment.paymentDetails, {
+  @ManyToOne(() => Invoice, (invoice) => invoice.invoiceDetails, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  payment: Payment;
+  invoice: Invoice;
 }

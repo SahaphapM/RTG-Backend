@@ -6,7 +6,6 @@ import { CustomersModule } from './customers/customers.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SubcontractorsModule } from './subcontractors/subcontractors.module';
 import { JobQuotationsModule } from './job-quotations/job-quotations.module';
-import { InvoicesModule } from './invoices/invoices.module';
 import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 import { QuotationsModule } from './quotations/quotations.module';
 import { CertificatesModule } from './certificates/certificates.module';
@@ -36,7 +35,6 @@ import { ItemsModule } from './items/items.module';
     ProjectsModule,
     SubcontractorsModule,
     JobQuotationsModule,
-    InvoicesModule,
     PurchaseOrdersModule,
     QuotationsModule,
     CertificatesModule,

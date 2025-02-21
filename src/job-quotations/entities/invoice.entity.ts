@@ -7,10 +7,10 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { JobQuotation } from './job-quotation.entity';
-import { PaymentDetail } from './paymentDetail.entity';
+import { InvoiceDetail } from './invoiceDetail.entity';
 
-@Entity('payment')
-export class Payment {
+@Entity('invoice')
+export class Invoice {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -36,7 +36,7 @@ export class Payment {
   total: number;
 
   @Column({ type: 'varchar', length: 16, nullable: true })
-  paymentTerms: string;
+  invoiceTerms: string;
 
   @Column({ type: 'varchar', length: 16, nullable: true })
   ourRef: string;
@@ -62,17 +62,17 @@ export class Payment {
   @Column({ type: 'date', nullable: true })
   receivedDate: Date;
 
-  // ✅ Relation to JobQuotation (Many Payments belong to One JobQuotation)
-  @ManyToOne(() => JobQuotation, (jobQuotation) => jobQuotation.payments, {
+  // ✅ Relation to JobQuotation (Many Invoices belong to One JobQuotation)
+  @ManyToOne(() => JobQuotation, (jobQuotation) => jobQuotation.invoices, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   jobQuotation: JobQuotation;
 
-  // ✅ Relation to PaymentDetails (One Payment has Many PaymentDetails)
-  @OneToMany(() => PaymentDetail, (paymentDetail) => paymentDetail.payment, {
+  // ✅ Relation to InvoiceDetails (One Invoice has Many InvoiceDetails)
+  @OneToMany(() => InvoiceDetail, (invoiceDetail) => invoiceDetail.invoice, {
     nullable: true,
     cascade: true,
   })
-  paymentDetails: PaymentDetail[];
+  invoiceDetails: InvoiceDetail[];
 }

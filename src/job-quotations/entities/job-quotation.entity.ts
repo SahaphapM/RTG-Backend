@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Payment } from './payment.entity';
+import { Invoice } from './invoice.entity';
 
 @Entity('JobQuotation')
 export class JobQuotation {
@@ -32,7 +32,7 @@ export class JobQuotation {
   customerRef: string; // Reference to the customer
 
   @Column({ type: 'varchar', length: 55, nullable: true })
-  paymentTerms: string; // Payment terms for the job quotation
+  invoiceTerms: string; // Invoice terms for the job quotation
 
   @Column({ type: 'varchar', length: 55, nullable: true })
   deliveryTime: string; // Delivery time for the job quotation
@@ -59,7 +59,7 @@ export class JobQuotation {
   updatedAt: Date; // Timestamp for when the record is last updated
 
   @Column({ type: 'varchar', length: 16, nullable: true })
-  paymentMethod: string | null; // Payment method for the project
+  invoiceMethod: string | null; // Invoice method for the project
 
   @ManyToOne(() => Project, (project) => project.jobQuotations, {
     onDelete: 'CASCADE',
@@ -67,14 +67,14 @@ export class JobQuotation {
   })
   project: Project; // Foreign Key: Project associated with the quotation
 
-  @OneToMany(() => Payment, (payment) => payment.jobQuotation, {
+  @OneToMany(() => Invoice, (invoice) => invoice.jobQuotation, {
     nullable: true,
     cascade: true,
   })
-  payments: Payment[];
+  invoices: Invoice[];
 }
 
-export enum PaymentMethods {
+export enum InvoiceMethods {
   CASH = 'Cash',
   CHECK = 'Check',
   CREDIT_CARD = 'Credit Card',
