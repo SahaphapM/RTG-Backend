@@ -29,7 +29,7 @@ export class Customer {
   @OneToMany(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.customer)
   purchaseOrders: PurchaseOrder[];
 
-  @OneToMany(() => Project, (project) => project.customer, { cascade: false })
+  @OneToMany(() => Project, (project) => project.customer)
   projects: Project[];
 
   @CreateDateColumn()

@@ -24,8 +24,11 @@ export class PurchaseOrdersController {
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() query: QueryDto) {
-    console.log(query);
-    return await this.purchaseOrdersService.findAll(query);
+    try {
+      return await this.purchaseOrdersService.findAll(query);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get(':id')

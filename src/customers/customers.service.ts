@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Customer } from './entities/customer.entity';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class CustomersService {
@@ -12,10 +13,31 @@ export class CustomersService {
     private customerRepository: Repository<Customer>,
   ) {}
 
-  async findAll(): Promise<Customer[]> {
-    return this.customerRepository.find();
-  }
+  async findAll(query: QueryDto) {
+    const { page, limit, search, sortBy, order } = query;
 
+    const whereCondition = search
+      ? [
+          { name: Like(`%${search}%`) }, // Match number
+          { email: Like(`%${search}%`) }, // Match email
+        ]
+      : [];
+
+    const [data, total] = await this.customerRepository.findAndCount({
+      where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists
+      order: { [sortBy]: order }, // Sorting
+      skip: (page - 1) * limit, // Pagination start index
+      take: limit, // Number of results per page
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
   async findById(id: number): Promise<Customer> {
     const customer = await this.customerRepository.findOne({ where: { id } });
     if (!customer) {
