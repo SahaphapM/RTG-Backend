@@ -17,7 +17,7 @@ export class CreateJobQuotationDto {
 
   @IsOptional()
   @IsString()
-  customerRef: string;
+  ourRef: string;
 
   @IsOptional()
   @IsString()
@@ -66,18 +66,6 @@ export class InvoiceDto {
   @IsOptional()
   @IsDateString()
   date: Date;
-
-  @IsOptional()
-  @IsString()
-  agentName: string;
-
-  @IsOptional()
-  @IsString()
-  agentEmail: string;
-
-  @IsOptional()
-  @IsString()
-  agentContact: string;
 
   @IsOptional()
   @IsString()

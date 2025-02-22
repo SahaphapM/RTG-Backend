@@ -117,11 +117,18 @@ export class ProjectsService {
         projectItemsList.push(newProjectItem);
       }
 
+      // Calculate total price
+      const totalPrice = projectItemsList.reduce(
+        (total, projectItem) => total + projectItem.totalPrice,
+        0,
+      );
+
       // Create and save Project
       const project = this.projectRepository.create({
         ...projectData,
         customer,
         projectItems: projectItemsList,
+        totalProjectPrice: totalPrice,
       });
 
       return await this.projectRepository.save(project);

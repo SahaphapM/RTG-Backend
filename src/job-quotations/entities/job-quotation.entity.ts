@@ -19,17 +19,8 @@ export class JobQuotation {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string; // Description of the job quotation
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  agentName: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  agentEmail: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  agentContact: string;
-
   @Column({ type: 'varchar', length: 16, nullable: true })
-  customerRef: string; // Reference to the customer
+  ourRef: string;
 
   @Column({ type: 'varchar', length: 55, nullable: true })
   invoiceTerms: string; // Invoice terms for the job quotation
@@ -42,9 +33,6 @@ export class JobQuotation {
 
   @Column({ type: 'decimal', nullable: true })
   vatPercentage: number; // VAT percentage for the job quotation
-
-  @Column({ type: 'varchar', length: 55, nullable: true })
-  bestRegards: string; // Best regards for the job quotation
 
   @Column({ type: 'decimal', nullable: true })
   priceOffered: number; // Total amount for the job quotation

@@ -26,6 +26,15 @@ export class Customer {
   @Column({ type: 'varchar', length: 64, nullable: true })
   email: string | null; // Optional email address for communication
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentName: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentEmail: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  agentContact: string;
+
   @OneToMany(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.customer)
   purchaseOrders: PurchaseOrder[];
 

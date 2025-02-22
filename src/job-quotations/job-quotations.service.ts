@@ -28,13 +28,13 @@ export class JobQuotationsService {
   ) {}
 
   async findAll(): Promise<JobQuotation[]> {
-    return this.jobQuotationRepository.find({ relations: ['project'] });
+    return this.jobQuotationRepository.find();
   }
 
   async findById(id: number): Promise<JobQuotation> {
     const jobQuotation = await this.jobQuotationRepository.findOne({
       where: { id },
-      relations: ['invoices'],
+      relations: { invoices: true },
     });
     if (!jobQuotation) {
       throw new NotFoundException(`Job Quotation with ID ${id} not found`);
@@ -45,7 +45,7 @@ export class JobQuotationsService {
   async findByProjectId(id: number): Promise<JobQuotation[]> {
     const jobQuotations = await this.jobQuotationRepository.find({
       where: { project: { id } },
-      relations: ['invoices'],
+      relations: { invoices: true },
     });
 
     if (!jobQuotations) {
@@ -122,7 +122,6 @@ export class JobQuotationsService {
     jobQuotationId: number,
     invoiceData: InvoiceDto,
   ): Promise<Invoice> {
-    console.log('invoiceDetails', invoiceData.invoiceDetails);
     const jobQuotation = await this.findById(jobQuotationId);
     const invoice = this.invoiceRepository.create(invoiceData);
 
@@ -132,11 +131,12 @@ export class JobQuotationsService {
     const savedInvoice = await this.invoiceRepository.save(invoice);
 
     // Then create and save invoice details
-    for (const detail of invoiceData.invoiceDetails) {
-      const invoiceDetail = this.invoiceDetailRepository.create(detail);
-      invoiceDetail.invoice = savedInvoice; // Use savedInvoice, which now has an ID
-      await this.invoiceDetailRepository.save(invoiceDetail);
-    }
+    // for (const detail of invoiceData.invoiceDetails) {
+    //   await this.invoiceDetailRepository.save({
+    //     invoice: savedInvoice,
+    //     ...detail,
+    //   });
+    // }
 
     return await this.findInvoiceById(savedInvoice.id);
   }
