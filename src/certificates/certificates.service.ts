@@ -7,11 +7,12 @@ import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { UpdateCertificateDto } from './dto/update-certificate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Certificate } from './entities/certificate.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import path from 'path';
 import * as fs from 'fs';
 import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
 import { Project } from 'src/projects/entities/project.entity';
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
 export class CertificatesService {
@@ -70,15 +71,36 @@ export class CertificatesService {
       );
     }
   }
+  async findAll(query: QueryDto) {
+    const { page, limit, search, sortBy, order } = query;
 
-  findAll() {
-    try {
-      return this.certificateRepository.find();
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Error fetching certificates: ' + error.message,
-      );
-    }
+    const whereCondition = search
+      ? [
+          { name: Like(`%${search}%`) },
+          { subcontractor: { name: Like(`%${search}%`) } },
+        ]
+      : [];
+
+    const [data, total] = await this.certificateRepository.findAndCount({
+      where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists
+      order: { [sortBy]: order }, // Sorting
+      skip: (page - 1) * limit, // Pagination start index
+      take: limit, // Number of results per page
+      relations: {
+        subcontractor: true,
+      },
+      select: {
+        subcontractor: { name: true },
+      },
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   findOne(id: number) {

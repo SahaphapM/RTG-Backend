@@ -76,6 +76,25 @@ export class PurchaseOrdersService {
     return purchaseOrder;
   }
 
+  async updateFile(id: number, filename: string): Promise<PurchaseOrder> {
+    try {
+      const purchaseOrder = await this.purchaseOrderRepository.findOne({
+        where: { id },
+      });
+
+      if (!purchaseOrder) {
+        throw new NotFoundException(`PurchaseOrder with id ${id} not found`);
+      }
+
+      purchaseOrder.file = filename;
+      return await this.purchaseOrderRepository.save(purchaseOrder);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error updating file for PurchaseOrder id ${id}: ${error.message}`,
+      );
+    }
+  }
+
   async create(
     createPurchaseOrderDto: CreatePurchaseOrderDto,
   ): Promise<PurchaseOrder> {
@@ -169,6 +188,29 @@ export class PurchaseOrdersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Failed to delete purchase order' + error.message,
+      );
+    }
+  }
+
+  async remove(id: number): Promise<{ message: string; file: string }> {
+    try {
+      const purchaseOrder = await this.purchaseOrderRepository.findOne({
+        where: { id },
+      });
+
+      if (!purchaseOrder) {
+        throw new NotFoundException(`PurchaseOrder with id ${id} not found`);
+      }
+
+      // ลบ record จากฐานข้อมูล
+      await this.purchaseOrderRepository.remove(purchaseOrder);
+      return {
+        message: `PurchaseOrder with id ${id} and its file have been removed successfully`,
+        file: purchaseOrder.file,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error removing purchaseOrder with id ${id}: ${error.message}`,
       );
     }
   }

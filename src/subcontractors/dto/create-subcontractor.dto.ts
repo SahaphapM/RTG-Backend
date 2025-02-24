@@ -35,6 +35,6 @@ export class CreateSubcontractorDto {
   email?: string;
 
   @IsOptional()
-  @IsBoolean({ message: 'isActive must be a boolean value' })
-  isActive?: boolean;
+  @IsString()
+  taxId?: string;
 }

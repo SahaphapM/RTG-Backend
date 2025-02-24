@@ -41,10 +41,6 @@ export class CreateJobQuotationDto {
 
   @IsOptional()
   @IsString()
-  bestRegards: string;
-
-  @IsOptional()
-  @IsString()
   message: string;
 
   @IsOptional()
@@ -65,7 +61,7 @@ export class InvoiceDto {
 
   @IsOptional()
   @IsDateString()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsString()
@@ -81,7 +77,7 @@ export class InvoiceDto {
 
   @IsOptional()
   @IsDateString()
-  paidDate: Date;
+  paidDate: string | null;
 
   @IsOptional()
   @Type(() => InvoiceDetailDto)

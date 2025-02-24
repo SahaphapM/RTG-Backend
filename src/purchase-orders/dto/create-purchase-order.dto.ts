@@ -48,6 +48,9 @@ export class CreatePurchaseOrderDto {
   @IsOptional()
   @IsNumber()
   vat?: number;
+
+  @IsOptional()
+  file: string;
 }
 
 export class CreateOrderDetailDto {

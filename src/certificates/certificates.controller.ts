@@ -14,6 +14,9 @@ import {
   InternalServerErrorException,
   Put,
   ParseIntPipe,
+  ValidationPipe,
+  UsePipes,
+  Query,
 } from '@nestjs/common';
 import { CertificatesService } from './certificates.service';
 import { CreateCertificateDto } from './dto/create-certificate.dto';
@@ -23,6 +26,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import { Response } from 'express'; // <-- ใช้จาก express
+import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Controller('certificates')
 export class CertificatesController {
@@ -158,10 +162,10 @@ export class CertificatesController {
   }
 
   @Get()
-  findAll() {
-    return this.certificatesService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(@Query() query: QueryDto) {
+    return await this.certificatesService.findAll(query);
   }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.certificatesService.findOne(+id);

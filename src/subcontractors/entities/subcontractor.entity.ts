@@ -29,6 +29,9 @@ export class Subcontractor {
   @Column({ type: 'varchar', length: 64, nullable: true })
   email: string | null; // Optional email for communication, can be null
 
+  @Column({ type: 'varchar', length: 64, nullable: true })
+  taxId: string | null; // Tax ID, can be null
+
   @OneToMany(
     () => PurchaseOrder,
     (purchaseOrder) => purchaseOrder.subcontractor,
