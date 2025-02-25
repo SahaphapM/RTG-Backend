@@ -24,9 +24,7 @@ export class CustomersController {
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() query: QueryDto) {
-    console.log(query);
     const users = await this.customerService.findAll(query);
-    console.log(users);
     return users;
   }
 

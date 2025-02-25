@@ -9,35 +9,45 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreatePurchaseOrderDto {
+  @IsOptional()
   @IsString()
-  number: string;
+  name: string;
 
+  @IsOptional()
   @IsString()
   qtNumber: string;
 
+  @IsOptional()
   @IsString()
   taxId: string;
 
+  @IsOptional()
   @IsString()
   ourRef: string;
 
+  @IsOptional()
   @IsString()
   description: string;
 
+  @IsOptional()
   @IsDateString()
   date: string;
 
+  @IsOptional()
   @IsNumber()
   subcontractorId: number;
 
+  @IsOptional()
   @IsNumber()
   customerId: number;
 
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateOrderDetailDto)
   orderDetails: CreateOrderDetailDto[];
 
+  @IsOptional()
   @IsNumber()
   total: number;
 

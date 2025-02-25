@@ -39,9 +39,7 @@ export class PurchaseOrdersController {
   async findAll(@Query() query: QueryDto) {
     try {
       return await this.purchaseOrdersService.findAll(query);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   @Get(':id')
@@ -76,7 +74,13 @@ export class PurchaseOrdersController {
               null,
             );
           }
-          const newFileName = `${Date.now()}-${file.originalname}`;
+          // ใช้ชื่อไฟล์ภาษาไทย โดยใช้ encodeURIComponent หรือ Buffer เพื่อให้ชื่อไฟล์เป็นอักขระที่รองรับ
+          const originalName = file.originalname;
+          const encodedName = encodeURIComponent(originalName); // หรือสามารถใช้ Buffer สำหรับการเข้ารหัสเป็นแบบ UTF-8
+
+          // สร้างชื่อไฟล์ใหม่ โดยการผสมกับ timestamp
+          const newFileName = `${Date.now()}-${encodedName}`;
+
           callback(null, newFileName);
         },
       }),
@@ -95,8 +99,6 @@ export class PurchaseOrdersController {
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    console.log('Uploading file for purhase order ID:', id);
-
     if (!file) {
       throw new BadRequestException('File is required!');
     }
@@ -118,7 +120,6 @@ export class PurchaseOrdersController {
         );
         if (fs.existsSync(oldFilePath)) {
           fs.unlinkSync(oldFilePath);
-          console.log(`Deleted old file: ${purchaseOrder.file}`);
         }
       }
 
@@ -158,7 +159,6 @@ export class PurchaseOrdersController {
       'quotations',
       filename,
     );
-    console.log('File path:', filePath);
 
     if (!fs.existsSync(filePath)) {
       throw new NotFoundException('File not found');
@@ -200,12 +200,10 @@ export class PurchaseOrdersController {
 
   removefile(file: string) {
     const filePath = path.join(process.cwd(), 'uploads', 'quotations', file);
-    console.log('Resolved File Path:', filePath);
 
     if (fs.existsSync(filePath)) {
       try {
         fs.unlinkSync(filePath);
-        console.log(`File ${file} deleted successfully.`);
       } catch (error) {
         console.error(`Failed to delete file: ${error.message}`);
       }

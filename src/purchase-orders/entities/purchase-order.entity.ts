@@ -19,6 +19,9 @@ export class PurchaseOrder {
   @Column({ type: 'varchar', length: 16, nullable: true })
   number: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  name: string;
+
   @Column({ type: 'varchar', length: 16, nullable: true })
   qtNumber: string;
 

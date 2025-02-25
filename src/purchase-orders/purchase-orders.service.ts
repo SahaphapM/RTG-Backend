@@ -101,12 +101,15 @@ export class PurchaseOrdersService {
     try {
       const { subcontractorId, customerId, ...rest } = createPurchaseOrderDto;
 
-      // Find subcontractor (if provided)
-      const subcontractor = subcontractorId
-        ? await this.subcontractorRepository.findOne({
-            where: { id: subcontractorId },
-          })
-        : null;
+      // Find subcontractor
+      const subcontractor = await this.subcontractorRepository.findOne({
+        where: { id: subcontractorId },
+      });
+      if (!subcontractor) {
+        throw new NotFoundException(
+          `Subcontractor with ID ${subcontractorId} not found`,
+        );
+      }
 
       // Find customer
       const customer = await this.customerRepository.findOne({
@@ -116,23 +119,23 @@ export class PurchaseOrdersService {
         throw new NotFoundException(`Customer with ID ${customerId} not found`);
       }
 
+      // Get the new PO number
+      const newPONumber = await this.generatePONumber(); // Call the function to generate PO number
+
       // Create purchase order
       const purchaseOrder = this.purchaseOrderRepository.create({
         ...rest,
         subcontractor,
         customer,
+        number: newPONumber,
       });
 
-      return await this.purchaseOrderRepository.save(purchaseOrder);
+      await this.purchaseOrderRepository.save(purchaseOrder);
+
+      return purchaseOrder;
     } catch (error) {
-      if (error.code === '23505') {
-        // Duplicate entry (e.g., unique constraint violation)
-        throw new BadRequestException(
-          'Purchase order already exists' + error.message,
-        );
-      }
       throw new InternalServerErrorException(
-        'Failed to create purchase order' + error.message,
+        `Failed to create purchase order: ${error.message}`,
       );
     }
   }
@@ -211,6 +214,40 @@ export class PurchaseOrdersService {
     } catch (error) {
       throw new InternalServerErrorException(
         `Error removing purchaseOrder with id ${id}: ${error.message}`,
+      );
+    }
+  }
+
+  async generatePONumber(): Promise<string> {
+    try {
+      const currentYear = new Date().getFullYear().toString();
+
+      // Query the latest PO number for the current year
+      const lastPO = await this.purchaseOrderRepository.findOne({
+        where: {
+          number: Like(`PO%/${currentYear}`),
+        },
+        order: {
+          number: 'DESC',
+        },
+      });
+
+      // Extract the last number part and increment it
+      let lastNumber = 0;
+      if (lastPO) {
+        const lastNumberString = lastPO.number.split('/')[0].replace('PO', '');
+        lastNumber = parseInt(lastNumberString);
+        // Generate the new PO number
+        const newPONumber = `PO${String(lastNumber + 1).padStart(5, '0')}/${currentYear}`;
+        return newPONumber;
+      } else {
+        // Generate the first PO number for the current year
+        const newPONumber = `PO00001/${currentYear}`;
+        return newPONumber;
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Failed to generate PO number: ${error.message}`,
       );
     }
   }
