@@ -74,13 +74,7 @@ export class PurchaseOrdersController {
               null,
             );
           }
-          // ใช้ชื่อไฟล์ภาษาไทย โดยใช้ encodeURIComponent หรือ Buffer เพื่อให้ชื่อไฟล์เป็นอักขระที่รองรับ
-          const originalName = file.originalname;
-          const encodedName = encodeURIComponent(originalName); // หรือสามารถใช้ Buffer สำหรับการเข้ารหัสเป็นแบบ UTF-8
-
-          // สร้างชื่อไฟล์ใหม่ โดยการผสมกับ timestamp
-          const newFileName = `${Date.now()}-${encodedName}`;
-
+          const newFileName = `${Date.now()}-${file.originalname}`;
           callback(null, newFileName);
         },
       }),
