@@ -61,6 +61,10 @@ export class CreatePurchaseOrderDto {
 
   @IsOptional()
   file: string;
+
+  @IsOptional()
+  @IsDateString()
+  shippedDate: string | null;
 }
 
 export class CreateOrderDetailDto {

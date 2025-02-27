@@ -238,11 +238,11 @@ export class PurchaseOrdersService {
         const lastNumberString = lastPO.number.split('/')[0].replace('PO', '');
         lastNumber = parseInt(lastNumberString);
         // Generate the new PO number
-        const newPONumber = `PO${String(lastNumber + 1).padStart(5, '0')}/${currentYear}`;
+        const newPONumber = `PO${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
         return newPONumber;
       } else {
         // Generate the first PO number for the current year
-        const newPONumber = `PO00001/${currentYear}`;
+        const newPONumber = `PO001/${currentYear}`;
         return newPONumber;
       }
     } catch (error) {

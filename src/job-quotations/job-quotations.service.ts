@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import {
   CreateJobQuotationDto,
   InvoiceDto,
@@ -125,18 +129,12 @@ export class JobQuotationsService {
     const jobQuotation = await this.findById(jobQuotationId);
     const invoice = this.invoiceRepository.create(invoiceData);
 
+    const newTaxInvoiceNumber = await this.generateInvoiceNumber();
+    invoice.taxInvoice = newTaxInvoiceNumber;
     invoice.jobQuotation = jobQuotation;
 
     // Save invoice first
     const savedInvoice = await this.invoiceRepository.save(invoice);
-
-    // Then create and save invoice details
-    // for (const detail of invoiceData.invoiceDetails) {
-    //   await this.invoiceDetailRepository.save({
-    //     invoice: savedInvoice,
-    //     ...detail,
-    //   });
-    // }
 
     return await this.findInvoiceById(savedInvoice.id);
   }
@@ -174,5 +172,39 @@ export class JobQuotationsService {
       throw new NotFoundException(`Invoice with ID ${invoiceId} not found`);
     }
     await this.invoiceRepository.remove(invoice);
+  }
+
+  async generateInvoiceNumber(): Promise<string> {
+    try {
+      const currentYear = new Date().getFullYear().toString();
+
+      // Query the latest invoice number for the current year
+      const lastInvoice = await this.invoiceRepository.findOne({
+        where: {
+          taxInvoice: Like(`INV%/${currentYear}`),
+        },
+        order: {
+          taxInvoice: 'DESC',
+        },
+      });
+
+      // Extract the last number part and increment it
+      let lastNumber = 0;
+      if (lastInvoice) {
+        const lastNumberString = lastInvoice.taxInvoice
+          .split('/')[0]
+          .replace('INV', '');
+        lastNumber = parseInt(lastNumberString);
+        // Generate the new invoice number
+        const newInvoiceNumber = `INV${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
+        return newInvoiceNumber;
+      } else {
+        // Generate the first invoice number for the current year
+        const newInvoiceNumber = `INV001/${currentYear}`;
+        return newInvoiceNumber;
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

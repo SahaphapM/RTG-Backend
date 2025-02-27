@@ -62,9 +62,6 @@ export class Invoice {
   @Column({ type: 'date', nullable: true })
   receivedDate: Date;
 
-  @Column({ type: 'boolean', default: false, nullable: true })
-  paid: boolean;
-
   // ✅ Relation to JobQuotation (Many Invoices belong to One JobQuotation)
   @ManyToOne(() => JobQuotation, (jobQuotation) => jobQuotation.invoices, {
     onDelete: 'CASCADE',

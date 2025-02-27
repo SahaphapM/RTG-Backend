@@ -40,6 +40,9 @@ export class PurchaseOrder {
   @Column({ type: 'varchar', length: 255, nullable: true })
   file: string;
 
+  @Column({ type: 'date', nullable: true })
+  shippedDate: Date;
+
   @ManyToOne(
     () => Subcontractor,
     (subcontractor) => subcontractor.purchaseOrders,
