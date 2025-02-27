@@ -20,7 +20,7 @@ export class User {
   @Column({ type: 'varchar', length: 64 })
   contact: string | null; // Contact information
 
-  @Column({ type: 'varchar', length: 64, unique: true, nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   email: string; // Email address
 
   @Column({ type: 'varchar', length: 16, nullable: true })
@@ -31,9 +31,4 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date; // Timestamp for when the record is last updated
-}
-
-export enum UserRoles {
-  ADMIN = 'Admin',
-  MANAGER = 'Manager',
 }
