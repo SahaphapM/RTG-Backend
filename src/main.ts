@@ -22,9 +22,10 @@ async function bootstrap() {
   app.use(
     '/uploads',
     (req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*'); // Allow all origins
+      res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow all origins
       res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
+      res.setHeader('Access-Control-Allow-Credentials', 'true'); // ✅ Required for `credentials: "include"`
       next();
     },
     express.static(uploadsPath),
@@ -37,7 +38,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 5000);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();

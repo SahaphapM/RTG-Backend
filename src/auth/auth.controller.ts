@@ -47,9 +47,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard) // ✅ Protect this route with JWT Authentication
   @Get('me')
   async getUser(@Req() req: any) {
+    console.log(req.user);
     if (req.user) {
       // const user = await this.userService.findByEmail(req.user.email);
-      console.log(req.user);
+
       const user = await this.userService.findById(req.user.sub);
       delete user.password;
       delete user.createdAt;

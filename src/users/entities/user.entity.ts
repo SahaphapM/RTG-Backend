@@ -44,10 +44,4 @@ export class User {
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }
-
-  // Hash password before updating
-  @BeforeUpdate()
-  async hashPasswordUpdate() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }

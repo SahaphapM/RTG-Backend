@@ -8,6 +8,7 @@ import { Like, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryDto } from 'src/paginations/pagination.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +27,21 @@ export class UsersService {
       order: { [sortBy]: order }, // Sorting
       skip: (page - 1) * limit, // Pagination start index
       take: limit, // Number of results per page
+      // select: {
+      //   id: true,
+      //   name: true,
+      //   email: true,
+      //   role: true,
+      //   createdAt: true,
+      //   updatedAt: true,
+      // },
     });
 
     return {
-      data,
+      data: data.map((user) => {
+        const { password, ...result } = user;
+        return result;
+      }),
       total,
       page,
       limit,
@@ -70,6 +82,15 @@ export class UsersService {
     id: number,
     updateUserDto: Partial<CreateUserDto>,
   ): Promise<User> {
+    // ✅ Remove password if empty
+    console.log(' updateUserDto.password', updateUserDto.password);
+    if (!updateUserDto.password || updateUserDto.password === '') {
+      delete updateUserDto.password;
+    } else {
+      // ✅ Hash the new password if provided
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
     const user = await this.findById(id);
     const updatedUser = Object.assign(user, updateUserDto);
     return this.userRepository.save(updatedUser);
