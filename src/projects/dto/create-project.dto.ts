@@ -13,16 +13,10 @@ import {
 export class CreateProjectDto {
   @IsString()
   @IsOptional()
-  @Length(3, 32, {
-    message: 'Project name must be between 3 and 32 characters long',
-  })
   name: string;
 
   @IsString()
   @IsOptional()
-  @Length(5, 500, {
-    message: 'Project description must be between 5 and 500 characters long',
-  })
   description: string;
 
   // @IsString()

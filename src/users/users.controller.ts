@@ -10,15 +10,32 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryDto } from 'src/paginations/pagination.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
+
+  // ✅ ใช้ `JwtAuthGuard` เพื่อป้องกัน API นี้
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@Req() req) {
+    // ส่งคืนข้อมูล User ที่ล็อกอินอยู่
+    const user = await this.userService.findByEmail(req.user.email);
+    // remove password ออกไป
+    delete user.password;
+    delete user.createdAt;
+    delete user.updatedAt;
+
+    return user; // ✅ คืนค่าข้อมูล User ที่ล็อกอินอยู่
+  }
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))

@@ -11,6 +11,8 @@ import { QuotationsModule } from './quotations/quotations.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { ItemsModule } from './items/items.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ConfigModule.forRoot(),
     UsersModule,
     CustomersModule,
     ProjectsModule,
@@ -39,6 +42,7 @@ import { ItemsModule } from './items/items.module';
     QuotationsModule,
     CertificatesModule,
     ItemsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

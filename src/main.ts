@@ -3,14 +3,18 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import * as path from 'path';
+const cookieParser = require('cookie-parser'); // ✅ ใช้ require() แทน import
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // ✅ เปิดใช้ Cookie Parser
+  app.use(cookieParser());
+
   // Enable CORS for Frontend Access
   app.enableCors({
-    origin: 'http://localhost:3000', // Allow Nuxt frontend
-    credentials: true,
+    origin: '*', // ✅ เปลี่ยนเป็น Frontend ของคุณ
+    credentials: true, // ✅ อนุญาตให้ส่ง Cookies ไปกับ Request
   });
 
   // Serve Static Files with CORS Headers
