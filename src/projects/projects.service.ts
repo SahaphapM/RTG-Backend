@@ -36,6 +36,7 @@ export class ProjectsService {
             { number: Like(`%${search}%`) }, // Match number
             { name: Like(`%${search}%`) }, // Match name
             { customer: { name: Like(`%${search}%`) } }, // Match subcontractor name
+            { total: Like(`%${search}%`) },
           ]
         : [];
 

@@ -19,12 +19,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { QueryDto } from 'src/paginations/pagination.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   // ✅ ใช้ `JwtAuthGuard` เพื่อป้องกัน API นี้
-  @UseGuards(JwtAuthGuard)
+
   @Get('profile')
   async getProfile(@Req() req) {
     // ส่งคืนข้อมูล User ที่ล็อกอินอยู่

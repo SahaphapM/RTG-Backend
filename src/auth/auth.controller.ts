@@ -5,15 +5,21 @@ import {
   Res,
   Req,
   UseGuards,
+  UnauthorizedException,
   Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Request, Response } from 'express';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   // ✅ Login แล้วเก็บ Token ใน Cookie
   @UseGuards(LocalAuthGuard)
@@ -38,9 +44,19 @@ export class AuthController {
     return res.send({ message: 'Logout successful' });
   }
 
-  // ✅ ตรวจสอบ Token ที่เก็บไว้ใน Cookie
+  @UseGuards(JwtAuthGuard) // ✅ Protect this route with JWT Authentication
   @Get('me')
-  async getUser(@Req() req: Request) {
-    return req.user;
+  async getUser(@Req() req: any) {
+    if (req.user) {
+      // const user = await this.userService.findByEmail(req.user.email);
+      console.log(req.user);
+      const user = await this.userService.findById(req.user.sub);
+      delete user.password;
+      delete user.createdAt;
+      delete user.updatedAt;
+      return user;
+    } else {
+      throw new UnauthorizedException('Unauthorized: No user found');
+    }
   }
 }

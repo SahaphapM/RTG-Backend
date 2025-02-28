@@ -11,13 +11,16 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SubcontractorsService } from './subcontractors.service';
 import { CreateSubcontractorDto } from './dto/create-subcontractor.dto';
 import { UpdateSubcontractorDto } from './dto/update-subcontractor.dto';
 import { Subcontractor } from './entities/subcontractor.entity';
 import { QueryDto } from 'src/paginations/pagination.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('subcontractors')
 export class SubcontractorsController {
   constructor(private readonly subcontractorService: SubcontractorsService) {}

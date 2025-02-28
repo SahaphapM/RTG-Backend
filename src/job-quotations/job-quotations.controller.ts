@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreateJobQuotationDto,
@@ -16,7 +17,9 @@ import { UpdateJobQuotationDto } from './dto/update-job-quotation.dto';
 import { JobQuotationsService } from './job-quotations.service';
 import { JobQuotation } from './entities/job-quotation.entity';
 import { Invoice } from './entities/invoice.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('job-quotations')
 export class JobQuotationsController {
   constructor(private readonly jobQuotationService: JobQuotationsService) {}

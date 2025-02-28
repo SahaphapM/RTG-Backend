@@ -20,6 +20,7 @@ export class CustomersService {
       ? [
           { name: Like(`%${search}%`) }, // Match number
           { email: Like(`%${search}%`) }, // Match email
+          { contact: Like(`%${search}%`) },
         ]
       : [];
 

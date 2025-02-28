@@ -20,7 +20,9 @@ export class UsersService {
     const { page, limit, search, sortBy, order } = query;
 
     const [data, total] = await this.userRepository.findAndCount({
-      where: search ? { name: Like(`%${search}%`) } : {}, // Search by name
+      where: search
+        ? [{ name: Like(`%${search}%`) }, { email: Like(`%${search}%`) }]
+        : {}, // Search by name and email
       order: { [sortBy]: order }, // Sorting
       skip: (page - 1) * limit, // Pagination start index
       take: limit, // Number of results per page

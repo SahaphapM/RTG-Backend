@@ -31,8 +31,9 @@ export class PurchaseOrdersService {
 
       const whereCondition = search
         ? [
-            { number: Like(`%${search}%`) }, // Match number
+            { name: Like(`%${search}%`) }, // Match number
             { subcontractor: { name: Like(`%${search}%`) } }, // Match subcontractor name
+            { number: Like(`%${search}%`) },
           ]
         : [];
 

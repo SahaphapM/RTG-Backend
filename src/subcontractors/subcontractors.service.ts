@@ -22,7 +22,13 @@ export class SubcontractorsService {
     const { page, limit, search, sortBy, order } = query;
 
     const [data, total] = await this.subcontractorRepository.findAndCount({
-      where: search ? { name: Like(`%${search}%`) } : {}, // Search by name
+      where: search
+        ? [
+            { name: Like(`%${search}%`) },
+            { email: Like(`%${search}%`) },
+            { contact: Like(`%${search}%`) },
+          ]
+        : {},
       order: { [sortBy]: order }, // Sorting
       skip: (page - 1) * limit, // Pagination start index
       take: limit, // Number of results per page

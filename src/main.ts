@@ -13,7 +13,7 @@ async function bootstrap() {
 
   // Enable CORS for Frontend Access
   app.enableCors({
-    origin: '*', // ✅ เปลี่ยนเป็น Frontend ของคุณ
+    origin: 'http://localhost:3000', // ✅ เปลี่ยนเป็น Frontend ของคุณ
     credentials: true, // ✅ อนุญาตให้ส่ง Cookies ไปกับ Request
   });
 
