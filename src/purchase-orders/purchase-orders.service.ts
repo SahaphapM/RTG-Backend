@@ -226,7 +226,7 @@ export class PurchaseOrdersService {
       // Query the latest PO number for the current year
       const lastPO = await this.purchaseOrderRepository.findOne({
         where: {
-          number: Like(`PO%/${currentYear}`),
+          number: Like(`%/${currentYear}`), // ✅ Look for any number pattern in the current year
         },
         order: {
           number: 'DESC',
@@ -236,16 +236,13 @@ export class PurchaseOrdersService {
       // Extract the last number part and increment it
       let lastNumber = 0;
       if (lastPO) {
-        const lastNumberString = lastPO.number.split('/')[0].replace('PO', '');
-        lastNumber = parseInt(lastNumberString);
-        // Generate the new PO number
-        const newPONumber = `PO${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
-        return newPONumber;
-      } else {
-        // Generate the first PO number for the current year
-        const newPONumber = `PO001/${currentYear}`;
-        return newPONumber;
+        const lastNumberString = lastPO.number.split('/')[0].replace(/\D/g, ''); // ✅ Remove all non-numeric characters
+        lastNumber = parseInt(lastNumberString, 10) || 0; // ✅ Ensure a valid number, default to 0
       }
+
+      // Generate the new PO number (without "PO" prefix)
+      const newPONumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
+      return newPONumber;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to generate PO number: ${error.message}`,

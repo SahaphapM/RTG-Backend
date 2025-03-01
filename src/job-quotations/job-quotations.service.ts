@@ -181,7 +181,7 @@ export class JobQuotationsService {
       // Query the latest invoice number for the current year
       const lastInvoice = await this.invoiceRepository.findOne({
         where: {
-          taxInvoice: Like(`No%/${currentYear}`),
+          taxInvoice: Like(`%/${currentYear}`),
         },
         order: {
           taxInvoice: 'DESC',
@@ -193,14 +193,10 @@ export class JobQuotationsService {
       if (lastInvoice) {
         const lastNumberString = lastInvoice.taxInvoice
           .split('/')[0]
-          .replace('No', '');
-        lastNumber = parseInt(lastNumberString);
+          .replace(/\D/g, '');
+        lastNumber = parseInt(lastNumberString, 10) || 0;
         // Generate the new invoice number
-        const newInvoiceNumber = `No${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
-        return newInvoiceNumber;
-      } else {
-        // Generate the first invoice number for the current year
-        const newInvoiceNumber = `No001/${currentYear}`;
+        const newInvoiceNumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
         return newInvoiceNumber;
       }
     } catch (error) {
