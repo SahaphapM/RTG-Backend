@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
@@ -9,13 +10,19 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryDto } from 'src/paginations/pagination.dto';
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly configService: ConfigService, // ✅ Inject ConfigService to read `.env`
   ) {}
+
+  async onModuleInit() {
+    await this.createAdminIfNotExists(); // ✅ Run when the module starts
+  }
 
   async findAll(query: QueryDto) {
     const { page, limit, search, sortBy, order } = query;
@@ -27,14 +34,6 @@ export class UsersService {
       order: { [sortBy]: order }, // Sorting
       skip: (page - 1) * limit, // Pagination start index
       take: limit, // Number of results per page
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   email: true,
-      //   role: true,
-      //   createdAt: true,
-      //   updatedAt: true,
-      // },
     });
 
     return {
@@ -99,5 +98,36 @@ export class UsersService {
   async delete(id: number): Promise<void> {
     const user = await this.findById(id);
     await this.userRepository.remove(user);
+  }
+
+  async createAdminIfNotExists() {
+    const adminExists = await this.userRepository.findOne({
+      where: { role: 'admin' },
+    });
+
+    if (!adminExists) {
+      const adminName = this.configService.get<string>('DEFAULT_ADMIN_NAME');
+      const adminEmail = this.configService.get<string>('DEFAULT_ADMIN_EMAIL');
+      const adminPassword = this.configService.get<string>(
+        'DEFAULT_ADMIN_PASSWORD',
+      );
+
+      // ✅ Ensure adminPassword is not empty before hashing
+      if (!adminPassword) {
+        throw new Error('DEFAULT_ADMIN_PASSWORD is missing in the .env file.');
+      }
+
+      const adminUser = this.userRepository.create({
+        name: adminName,
+        email: adminEmail,
+        password: adminPassword,
+        role: 'admin',
+      });
+
+      await this.userRepository.save(adminUser);
+      // console.log(
+      //   `✅ Admin created: ${adminEmail} / ${adminPassword} (Please change this password)`,
+      // );
+    }
   }
 }

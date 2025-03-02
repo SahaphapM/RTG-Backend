@@ -16,22 +16,22 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DATABASE_HOST || 'localhost',
+      port: Number(process.env.DATABASE_PORT) || 3306,
+      username: process.env.DATABASE_USER || 'root',
+      password: process.env.DATABASE_PASSWORD || 'root',
+      database: process.env.DATABASE_NAME || 'test',
+      autoLoadEntities: true,
+      synchronize: true, // ❗ ห้ามใช้ใน Production ควรใช้ Migration แทน
+    }),
     // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   host: 'localhost',
-    //   port: 3306,
-    //   username: 'user123',
-    //   password: 'pass123',
-    //   database: 'mydatabase',
+    //   type: 'sqlite',
+    //   database: 'database.sqlite',
     //   autoLoadEntities: true,
     //   synchronize: true,
     // }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'database.sqlite',
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
     ConfigModule.forRoot(),
     UsersModule,
     CustomersModule,
