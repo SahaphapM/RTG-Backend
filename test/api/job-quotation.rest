@@ -1,0 +1,52 @@
+// project
+@localhost = http://localhost:5000/job-quotations
+
+###
+get {{localhost}}
+
+###
+get {{localhost}}/4
+
+
+// get by project Id
+###
+get {{localhost}}/project/1
+
+
+// create project
+###
+post {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{
+    "description": "container structure for the project of the company make it simple with the container structure implementation ",
+    "paymentTerms": "cash",
+    "deliveryTime": "30 days",
+    "deliveryPlace": "indonesia",
+    "vatPercentage": 10,
+    "bestRegards": "joko",
+    "priceOffered": 10000
+}
+
+
+// update project
+###
+put {{localhost}}/4 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "container structure11111",
+    "projectItems": [
+        {
+            "itemId": 1,
+            "quantity": 1,
+            "price": 999999
+        },
+        {
+            "itemId": 2,
+            "quantity": 1,
+            "price": 10000
+        }
+    ]
+}
+

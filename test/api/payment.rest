@@ -1,0 +1,79 @@
+// Payment
+@localhost = http://localhost:5000/job-quotations
+
+###
+get {{localhost}}
+
+### get jobQuotation
+get {{localhost}}/1
+
+### get Payments by jobQuotation id
+get {{localhost}}/1/payments
+
+
+//get Payment by id
+### 
+get {{localhost}}/payments/28
+
+
+// create Payment and PaymentDetail with jobQuotation id
+###
+post {{localhost}}/1/payments HTTP/1.1
+content-type: application/json
+
+{
+
+    "price": 10000,
+    "date": "2022-01-01",
+    "ourTax": "0",
+    "cusTax": "0",
+    "taxInvoice": "0",
+    "paidDate": "2022-01-01",
+    "paymentDetails": [
+        {
+            "description": "test1",
+            "unitPrice": 5000,
+            "qty": 2,
+            "discount": 0,
+            "total": 1000
+        },
+        {
+            "description": "test2",
+            "unitPrice": 5000,
+            "qty": 2,
+            "discount": 0,
+            "total": 1000
+        },
+        {
+            "description": "test3",
+            "unitPrice": 4000,
+            "qty": 2,
+            "discount": 100,
+            "total": 3900
+        }
+    ]
+
+}
+
+
+// update project
+###
+put {{localhost}}/4 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "container structure11111",
+    "projectItems": [
+        {
+            "itemId": 1,
+            "quantity": 1,
+            "price": 999999
+        },
+        {
+            "itemId": 2,
+            "quantity": 1,
+            "price": 10000
+        }
+    ]
+}
+

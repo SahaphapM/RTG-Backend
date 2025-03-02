@@ -1,0 +1,25 @@
+// Item api
+@localhost = http://localhost:5000/items
+
+###
+get {{localhost}}
+
+###
+get {{localhost}}/1
+
+###
+post {{localhost}} HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Scarp",
+    "price": 1000
+}
+
+###
+put {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{
+    "price": 30000
+}

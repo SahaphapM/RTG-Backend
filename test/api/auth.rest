@@ -1,0 +1,37 @@
+@localhost = http://localhost:5000/auth
+
+### ✅ 1. สมัครสมาชิก (Register)
+POST {{localhost}}/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "123456",
+  "role": "admin"
+}
+
+### ✅ 2. ล็อกอิน (Login)
+POST {{localhost}}/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+
+### ✅ 3. ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่ (ใช้ Cookies)
+GET {{localhost}}/me
+Content-Type: application/json
+
+
+### ✅ 4. Logout และลบ Cookie
+POST {{localhost}}/logout
+Content-Type: application/json
+
+
+
+### ✅ 5. ทดสอบ API `/users/profile` (ต้องล็อกอิน) Have to test at Postman
+GET http://localhost:5000/users/profile
+Content-Type: application/json
+Credentials: include

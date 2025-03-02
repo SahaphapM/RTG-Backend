@@ -1,0 +1,38 @@
+// subcontrator
+@localhost = http://localhost:5000/subcontractors
+
+###
+get {{localhost}}
+
+
+// create subcontrator
+###
+post {{localhost}} HTTP/1.1
+content-type: application/json
+
+{
+    "name": "John Subcontrator",
+    "type" : "Contractor",
+    "address": "123 Street",
+    "email": "johnSubcontrator@example.com",
+    "contact": "1234567890 or +6281234567890"
+}
+
+
+// update subcontrator
+###
+patch {{localhost}}/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "John Subcontrator0003",
+    "type" : "Contractor",
+    "address": "123 Street",
+    "contact": "1234567890",
+    "email": "johnSubcontrator@example.com"
+}
+
+
+// delete subcontrator
+###
+delete {{localhost}}/1

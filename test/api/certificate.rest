@@ -1,0 +1,54 @@
+// Rest Client api handler
+
+@localhost = http://localhost:5000/certificates
+
+
+### Create Certificate
+POST {{localhost}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Project Certificate",
+  "description": "This is a test certificate",
+  "type": "Technical",
+  "date": "2020-01-01",
+  "projectId": 1,
+  "subcontractorId": 3
+}
+
+
+### Upload certificate PDF with additional fields
+POST {{localhost}}/upload/16 HTTP/1.1
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="Certificate.pdf"
+Content-Type: application/pdf
+
+# "C:\Users\66808\Downloads\PO_PDF.pdf"
+< C:/Users/66808/Downloads/PO_PDF.pdf
+--boundary--
+
+
+
+
+### Get Certificate
+GET {{localhost}}/download/1739727335513-Certificate.pdf
+
+
+
+### Update Certificate
+PUT http://localhost:5000/certificates/2
+Content-Type: application/json
+
+{
+  "name": "Updated Certificate Name",
+  "description": "Updated Description",
+  "type": "Technical"
+}
+
+### Delete Certificate
+DELETE http://localhost:5000/certificates/13
+
+
+###
