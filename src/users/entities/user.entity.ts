@@ -15,10 +15,10 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number; // Primary Key: Auto-incremented ID
 
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 64 })
   name: string; // Name of the user
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 32, nullable: true })
   position: string; // Position of the user
 
   @Column({ type: 'varchar', length: 64, nullable: true })

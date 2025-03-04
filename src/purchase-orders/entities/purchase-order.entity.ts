@@ -22,10 +22,10 @@ export class PurchaseOrder {
   @Column({ type: 'varchar', length: 255, nullable: true })
   name: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   qtNumber: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   taxId: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

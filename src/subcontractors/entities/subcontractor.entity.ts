@@ -20,13 +20,13 @@ export class Subcontractor {
   @Column({ type: 'varchar', length: 24, nullable: true })
   type: string | null; // Type of subcontractor (e.g., supplier, contractor), can be null
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true })
   address: string | null; // Address of the subcontractor, can be null
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   contact: string | null; // Contact information, can be null
 
-  @Column({ type: 'varchar', length: 64, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   email: string | null; // Optional email for communication, can be null
 
   @Column({ type: 'varchar', length: 64, nullable: true })

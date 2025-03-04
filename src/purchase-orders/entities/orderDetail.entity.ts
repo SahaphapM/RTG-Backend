@@ -12,7 +12,7 @@ export class OrderDetail {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({

@@ -18,10 +18,10 @@ export class Project {
   @PrimaryGeneratedColumn()
   id: number; // Primary Key: Auto-incremented ID
 
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 64 })
   name: string; // Name of the project
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: 'text', nullable: true })
   description: string; // Description of the project
 
   @Column({ type: 'varchar', length: 16 })
