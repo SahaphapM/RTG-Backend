@@ -21,10 +21,28 @@ export class ProjectItem {
   @Column({ type: 'int', default: 1 })
   quantity: number; // Quantity of the item in the project
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   price: number | null; // Price at the time
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   totalPrice: number | null; // Total price of items
 
   @CreateDateColumn()

@@ -33,7 +33,16 @@ export class Project {
   @Column({ type: 'date', nullable: true })
   endDate: Date | null; // End date of the project, can be null
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   totalProjectPrice: number | null; // Total price of the project
 
   @CreateDateColumn()

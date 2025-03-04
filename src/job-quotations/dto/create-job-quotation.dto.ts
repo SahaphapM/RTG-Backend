@@ -8,7 +8,6 @@ import {
   IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InvoiceMethods } from '../entities/job-quotation.entity';
 
 export class CreateJobQuotationDto {
   @IsOptional()
@@ -44,10 +43,6 @@ export class CreateJobQuotationDto {
   message: string;
 
   @IsOptional()
-  @IsEnum(InvoiceMethods)
-  invoiceMethod: InvoiceMethods;
-
-  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => InvoiceDto)
@@ -55,10 +50,6 @@ export class CreateJobQuotationDto {
 }
 
 export class InvoiceDto {
-  @IsOptional()
-  @IsNumber()
-  price: number;
-
   @IsOptional()
   @IsDateString()
   date: string;
@@ -72,12 +63,52 @@ export class InvoiceDto {
   cusTax: string;
 
   @IsOptional()
-  @IsString()
-  taxInvoice: string;
-
-  @IsOptional()
   @IsDateString()
   paidDate: string | null;
+
+  @IsOptional()
+  @IsNumber()
+  discount: number;
+
+  @IsOptional()
+  @IsNumber()
+  total: number;
+
+  @IsOptional()
+  @IsString()
+  invoiceTerms: string;
+
+  @IsOptional()
+  @IsString()
+  ourRef: string;
+
+  @IsOptional()
+  @IsString()
+  bank: string;
+
+  @IsOptional()
+  @IsString()
+  branch: string;
+
+  @IsOptional()
+  @IsString()
+  accountName: string;
+
+  @IsOptional()
+  @IsString()
+  accountNumber: string;
+
+  @IsOptional()
+  @IsString()
+  swift: string;
+
+  @IsOptional()
+  @IsString()
+  receivedBy: string;
+
+  @IsOptional()
+  @IsString()
+  receivedDate: string | null;
 
   @IsOptional()
   @Type(() => InvoiceDetailDto)
@@ -87,6 +118,10 @@ export class InvoiceDto {
 }
 
 export class InvoiceDetailDto {
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+
   @IsOptional()
   @IsString()
   description: string;

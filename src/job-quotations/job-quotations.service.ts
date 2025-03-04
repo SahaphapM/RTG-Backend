@@ -64,6 +64,7 @@ export class JobQuotationsService {
     projectId: number,
     quotationData: CreateJobQuotationDto,
   ): Promise<JobQuotation> {
+    console.log(quotationData);
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
@@ -133,10 +134,14 @@ export class JobQuotationsService {
     invoice.taxInvoice = newTaxInvoiceNumber;
     invoice.jobQuotation = jobQuotation;
 
-    // Save invoice first
-    const savedInvoice = await this.invoiceRepository.save(invoice);
+    try {
+      const savedInvoice = await this.invoiceRepository.save(invoice);
 
-    return await this.findInvoiceById(savedInvoice.id);
+      return await this.findInvoiceById(savedInvoice.id);
+    } catch (error) {
+      console.error('Error saving invoice:', error);
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async updateInvoice(
@@ -150,18 +155,23 @@ export class JobQuotationsService {
       throw new NotFoundException(`Invoice with ID ${invoiceId} not found`);
     }
 
-    Object.assign(invoice, invoiceData);
+    try {
+      Object.assign(invoice, invoiceData);
 
-    await this.invoiceRepository.save(invoice);
+      await this.invoiceRepository.save(invoice);
 
-    // Then create and save invoice details
-    for (const detail of invoiceData.invoiceDetails) {
-      const invoiceDetail = this.invoiceDetailRepository.create(detail);
-      invoiceDetail.invoice = invoice; // Use savedInvoice, which now has an ID
-      await this.invoiceDetailRepository.save(invoiceDetail);
+      // Then create and save invoice details
+      for (const detail of invoiceData.invoiceDetails) {
+        const invoiceDetail = this.invoiceDetailRepository.create(detail);
+        invoiceDetail.invoice = invoice; // Use savedInvoice, which now has an ID
+        await this.invoiceDetailRepository.save(invoiceDetail);
+      }
+
+      return await this.findInvoiceById(invoiceId);
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      throw new InternalServerErrorException(error);
     }
-
-    return await this.findInvoiceById(invoiceId);
   }
 
   async deleteInvoice(invoiceId: number): Promise<void> {
@@ -188,17 +198,22 @@ export class JobQuotationsService {
         },
       });
 
-      // Extract the last number part and increment it
-      let lastNumber = 0;
+      let newInvoiceNumber: string;
+
       if (lastInvoice) {
+        // Extract the last number part and increment it
         const lastNumberString = lastInvoice.taxInvoice
           .split('/')[0]
           .replace(/\D/g, '');
-        lastNumber = parseInt(lastNumberString, 10) || 0;
-        // Generate the new invoice number
-        const newInvoiceNumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
-        return newInvoiceNumber;
+        const lastNumber = parseInt(lastNumberString, 10) || 0;
+
+        newInvoiceNumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
+      } else {
+        // ✅ ถ้ายังไม่มีเลข Invoice มาก่อน ให้เริ่มที่ `001`
+        newInvoiceNumber = `001/${currentYear}`;
       }
+
+      return newInvoiceNumber;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

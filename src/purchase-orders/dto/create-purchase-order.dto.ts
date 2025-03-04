@@ -7,6 +7,8 @@ import {
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
+import { Customer } from 'src/customers/entities/customer.entity';
 
 export class CreatePurchaseOrderDto {
   @IsOptional()
@@ -34,12 +36,10 @@ export class CreatePurchaseOrderDto {
   date: string;
 
   @IsOptional()
-  @IsNumber()
-  subcontractorId: number;
+  subcontractor: Partial<Subcontractor> | null;
 
   @IsOptional()
-  @IsNumber()
-  customerId: number;
+  customer: Partial<Customer> | null;
 
   @IsOptional()
   @IsArray()
@@ -60,7 +60,7 @@ export class CreatePurchaseOrderDto {
   vat?: number;
 
   @IsOptional()
-  file: string;
+  file: string | null;
 
   @IsOptional()
   @IsDateString()
@@ -68,6 +68,9 @@ export class CreatePurchaseOrderDto {
 }
 
 export class CreateOrderDetailDto {
+  @IsOptional()
+  id?: number;
+
   @IsOptional()
   @IsString()
   description: string;
