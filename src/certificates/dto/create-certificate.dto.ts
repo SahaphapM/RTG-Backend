@@ -1,4 +1,6 @@
 import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Project } from 'src/projects/entities/project.entity';
+import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
 
 export class CreateCertificateDto {
   @IsString()
@@ -19,13 +21,11 @@ export class CreateCertificateDto {
 
   @IsString()
   @IsOptional()
-  file: string;
+  file: string | null;
 
   @IsOptional()
-  @IsNumber()
-  projectId: number;
+  project: Partial<Project> | null;
 
   @IsOptional()
-  @IsNumber()
-  subcontractorId: number;
+  subcontractor: Partial<Subcontractor> | null;
 }

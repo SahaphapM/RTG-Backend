@@ -165,7 +165,7 @@ export class PurchaseOrdersService {
       const { subcontractor, customer, ...rest } = updatePurchaseOrderDto;
 
       // Update subcontractor (if provided)
-      if (subcontractor !== undefined) {
+      if (subcontractor) {
         purchaseOrder.subcontractor =
           await this.subcontractorRepository.findOne({
             where: { id: subcontractor.id },
@@ -178,7 +178,7 @@ export class PurchaseOrdersService {
       }
 
       // Update customer (if provided)
-      if (customer !== undefined) {
+      if (customer) {
         purchaseOrder.customer = await this.customerRepository.findOne({
           where: { id: customer.id },
         });
@@ -190,7 +190,7 @@ export class PurchaseOrdersService {
       }
 
       // Update other fields
-      Object.assign(purchaseOrder, rest);
+      Object.assign(purchaseOrder, updatePurchaseOrderDto);
 
       return await this.purchaseOrderRepository.save(purchaseOrder);
     } catch (error) {

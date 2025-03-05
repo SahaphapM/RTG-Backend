@@ -30,13 +30,30 @@ export class CertificatesService {
     createCertificateDto: CreateCertificateDto,
   ): Promise<Certificate> {
     try {
-      const project = await this.projectRepository.findOne({
-        where: { id: createCertificateDto.projectId },
-      });
+      const { project, subcontractor } = createCertificateDto;
 
-      const subcontractor = await this.subcontractorRepository.findOne({
-        where: { id: createCertificateDto.subcontractorId },
-      });
+      if (project) {
+        const existingProject = await this.projectRepository.findOne({
+          where: { id: createCertificateDto.project.id },
+        });
+        if (!existingProject) {
+          throw new NotFoundException(
+            `Project with ID ${createCertificateDto.project.id} not found`,
+          );
+        }
+      }
+
+      if (subcontractor) {
+        const existingSubcontractor =
+          await this.subcontractorRepository.findOne({
+            where: { id: createCertificateDto.subcontractor.id },
+          });
+        if (!existingSubcontractor) {
+          throw new NotFoundException(
+            `Subcontractor with ID ${createCertificateDto.subcontractor.id} not found`,
+          );
+        }
+      }
 
       const certificate = this.certificateRepository.create({
         ...createCertificateDto,
@@ -128,6 +145,31 @@ export class CertificatesService {
     updateCertificateDto: UpdateCertificateDto,
   ): Promise<Certificate> {
     try {
+      const { project, subcontractor, ...rest } = updateCertificateDto;
+
+      if (project) {
+        const existingProject = await this.projectRepository.findOne({
+          where: { id: project.id },
+        });
+        if (!existingProject) {
+          throw new NotFoundException(
+            `Project with ID ${project.id} not found`,
+          );
+        }
+      }
+
+      if (subcontractor) {
+        const existingSubcontractor =
+          await this.subcontractorRepository.findOne({
+            where: { id: subcontractor.id },
+          });
+        if (!existingSubcontractor) {
+          throw new NotFoundException(
+            `Subcontractor with ID ${subcontractor.id} not found`,
+          );
+        }
+      }
+
       const certificate = await this.certificateRepository.findOne({
         where: { id },
       });
