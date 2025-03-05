@@ -78,18 +78,27 @@ export class PurchaseOrdersService {
   }
 
   async updateFile(id: number, filename: string): Promise<PurchaseOrder> {
+    console.log('updateFile', id, filename);
+
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid ID: ID must be a number');
+    }
+
     try {
       const purchaseOrder = await this.purchaseOrderRepository.findOne({
         where: { id },
       });
-
+      console.log('Found PurchaseOrder:', purchaseOrder); // ✅ ตรวจสอบค่า
       if (!purchaseOrder) {
         throw new NotFoundException(`PurchaseOrder with id ${id} not found`);
       }
 
-      purchaseOrder.file = filename;
-      return await this.purchaseOrderRepository.save(purchaseOrder);
+      return await this.purchaseOrderRepository.save({
+        ...purchaseOrder,
+        file: filename,
+      });
     } catch (error) {
+      console.error('Backend log Error updating file :', error);
       throw new InternalServerErrorException(
         `Error updating file for PurchaseOrder id ${id}: ${error.message}`,
       );

@@ -137,9 +137,7 @@ export class PurchaseOrdersController {
         fs.unlinkSync(file.path);
       }
 
-      throw new InternalServerErrorException(
-        `Error uploading file: ${error.message}`,
-      );
+      throw new InternalServerErrorException(`Error uploading file: ${error}`);
     }
   }
 

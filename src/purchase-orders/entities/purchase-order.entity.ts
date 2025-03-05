@@ -59,7 +59,6 @@ export class PurchaseOrder {
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.purchaseOrder, {
     cascade: true,
-    eager: true,
   })
   orderDetails: OrderDetail[];
 
