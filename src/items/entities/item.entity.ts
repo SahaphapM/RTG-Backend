@@ -9,7 +9,16 @@ export class Item {
   @Column()
   name: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   price: number;
 
   @OneToMany(() => ProjectItem, (projectItem) => projectItem.item, {

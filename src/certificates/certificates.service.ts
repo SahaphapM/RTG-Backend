@@ -7,7 +7,7 @@ import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { UpdateCertificateDto } from './dto/update-certificate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Certificate } from './entities/certificate.entity';
-import { Like, Repository } from 'typeorm';
+import { Like, MoreThan, Repository } from 'typeorm';
 import path from 'path';
 import * as fs from 'fs';
 import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
@@ -77,7 +77,9 @@ export class CertificatesService {
     const whereCondition = search
       ? [
           { name: Like(`%${search}%`) },
+          { date: MoreThan(new Date(search)) }, // Assuming search is a date string
           { subcontractor: { name: Like(`%${search}%`) } },
+          { project: { name: Like(`%${search}%`) } },
         ]
       : [];
 
@@ -88,9 +90,11 @@ export class CertificatesService {
       take: limit, // Number of results per page
       relations: {
         subcontractor: true,
+        project: true,
       },
       select: {
         subcontractor: { name: true },
+        project: { name: true },
       },
     });
 

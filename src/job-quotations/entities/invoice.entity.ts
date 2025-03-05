@@ -17,10 +17,10 @@ export class Invoice {
   @Column({ type: 'date', nullable: true })
   date: Date;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 55, nullable: true })
   ourTax: string;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 55, nullable: true })
   cusTax: string;
 
   @Column({ type: 'varchar', length: 16, nullable: true })
@@ -29,34 +29,52 @@ export class Invoice {
   @Column({ type: 'date', nullable: true })
   paidDate: Date;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   discount: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   total: number;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'text', nullable: true })
   invoiceTerms: string;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 55, nullable: true })
   ourRef: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   bank: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'text', nullable: true })
   branch: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   accountName: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 55, nullable: true })
   accountNumber: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'text', nullable: true })
   swift: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'text', nullable: true })
   receivedBy: string;
 
   @Column({ type: 'date', nullable: true })

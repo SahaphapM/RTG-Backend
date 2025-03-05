@@ -1,15 +1,31 @@
 services:
   backend:
     container_name: nestjs_backend
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile.prod
     ports:
-      - '3000:3000'
-    command: npm run start:dev
+      - '3001:3001'
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - JWT_SECRET=ABCSDKFAJ1232DSAFI1323AD123ADAD
+      - COOKIE_SECRET=asdfsadfkLDKJFKD1233ijfL:KDFJSLJKjnvmdkjshfh
+      # Database environment
+      - DATABASE_HOST=mysql_db # ✅ ใช้ container name แทน localhost
+      - DATABASE_PORT=3306
+      - DATABASE_USER=user123
+      - DATABASE_PASSWORD=pass123
+      - DATABASE_NAME=mydatabase
+      # Init Admin
+      - DEFAULT_ADMIN_NAME=Super Admin
+      - DEFAULT_ADMIN_EMAIL=admin@2ksljasdDKJKIsdfHe.com
+      - DEFAULT_ADMIN_PASSWORD=AdminxIokplDsCpwc@i4591glGipsDL123ldSDKf
     depends_on:
-      - mysql_db
-    volumes:
-      - ./src:/usr/src/app/src
-      - /usr/src/app/node_modules
+      mysql_db:
+        # Wait for mysql_db to be ready
+        condition: service_healthy
+    restart: always
     networks:
       - app_network
 
@@ -27,6 +43,12 @@ services:
       - ./db:/var/lib/mysql
     networks:
       - app_network
+    healthcheck: # ✅ เพิ่ม healthcheck ให้ MySQL
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s # ✅ เช็คทุก 10 วินาที
+      timeout: 5s # ✅ ถ้าไม่มีการตอบสนองภายใน 5 วินาที ถือว่า Fail
+      retries: 3 # ✅ ลองใหม่ 3 ครั้งก่อนถือว่า Fail
+      start_period: 40s # ✅ ให้เวลารอ MySQL เริ่มต้น 30 วินาที
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -46,3 +68,7 @@ services:
 networks:
   app_network:
     driver: bridge
+# docker-compose up --build -d backend
+# docker-compose up --build -d mysql_db
+# docker-compose up --build -d phpmyadmin
+# docker-compose down

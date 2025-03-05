@@ -18,10 +18,10 @@ export class Project {
   @PrimaryGeneratedColumn()
   id: number; // Primary Key: Auto-incremented ID
 
-  @Column({ type: 'varchar', length: 32 })
+  @Column({ type: 'varchar', length: 64 })
   name: string; // Name of the project
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: 'text', nullable: true })
   description: string; // Description of the project
 
   @Column({ type: 'varchar', length: 16 })
@@ -33,7 +33,16 @@ export class Project {
   @Column({ type: 'date', nullable: true })
   endDate: Date | null; // End date of the project, can be null
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   totalProjectPrice: number | null; // Total price of the project
 
   @CreateDateColumn()

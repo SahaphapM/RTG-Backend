@@ -84,14 +84,19 @@ export class ProjectsService {
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
     try {
-      const { customerId, projectItems, ...projectData } = createProjectDto;
+      const { customer, projectItems, ...projectData } = createProjectDto;
 
       // Validate customer
-      const customer = await this.customerRepository.findOne({
-        where: { id: customerId },
-      });
-      if (!customer) {
-        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+
+      if (customer) {
+        const existingCustomer = await this.customerRepository.findOne({
+          where: { id: customer.id },
+        });
+        if (!existingCustomer) {
+          throw new NotFoundException(
+            `Customer with ID ${customer.id} not found`,
+          );
+        }
       }
 
       // Validate items and prepare ProjectItems
@@ -152,7 +157,7 @@ export class ProjectsService {
     id: number,
     updateProjectDto: UpdateProjectDto,
   ): Promise<Project> {
-    const { customerId, projectItems, ...projectData } = updateProjectDto;
+    const { customer, projectItems, ...projectData } = updateProjectDto;
 
     // Find existing project with projectItems and customer
     const project = await this.projectRepository.findOne({
@@ -165,14 +170,16 @@ export class ProjectsService {
     }
 
     // Validate customer if changed
-    if (customerId && project.customer.id !== customerId) {
-      const customer = await this.customerRepository.findOne({
-        where: { id: customerId },
+    if (customer && project.customer.id !== customer.id) {
+      const existingCustomer = await this.customerRepository.findOne({
+        where: { id: customer.id },
       });
       if (!customer) {
-        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+        throw new NotFoundException(
+          `Customer with ID ${customer.id} not found`,
+        );
       }
-      project.customer = customer;
+      project.customer = existingCustomer;
     }
 
     // Delete all existing ProjectItems for this project

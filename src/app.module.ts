@@ -7,7 +7,6 @@ import { ProjectsModule } from './projects/projects.module';
 import { SubcontractorsModule } from './subcontractors/subcontractors.module';
 import { JobQuotationsModule } from './job-quotations/job-quotations.module';
 import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
-import { QuotationsModule } from './quotations/quotations.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
@@ -39,7 +38,6 @@ import { ConfigModule } from '@nestjs/config';
     SubcontractorsModule,
     JobQuotationsModule,
     PurchaseOrdersModule,
-    QuotationsModule,
     CertificatesModule,
     ItemsModule,
     AuthModule,

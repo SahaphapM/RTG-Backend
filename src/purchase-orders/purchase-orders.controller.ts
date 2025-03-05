@@ -54,7 +54,9 @@ export class PurchaseOrdersController {
   async create(
     @Body() createPurchaseOrderDto: CreatePurchaseOrderDto,
   ): Promise<PurchaseOrder> {
-    return this.purchaseOrdersService.create(createPurchaseOrderDto);
+    try {
+      return await this.purchaseOrdersService.create(createPurchaseOrderDto);
+    } catch (error) {}
   }
 
   // ✅ 2️⃣ อัปโหลดไฟล์และอัปเดตชื่อไฟล์ของ Quotation

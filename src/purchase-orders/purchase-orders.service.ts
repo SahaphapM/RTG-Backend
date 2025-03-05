@@ -99,39 +99,45 @@ export class PurchaseOrdersService {
   async create(
     createPurchaseOrderDto: CreatePurchaseOrderDto,
   ): Promise<PurchaseOrder> {
+    console.log('createPurchaseOrderDto', createPurchaseOrderDto);
     try {
-      const { subcontractorId, customerId, ...rest } = createPurchaseOrderDto;
+      const { subcontractor, customer, ...rest } = createPurchaseOrderDto;
 
       // Find subcontractor
-      const subcontractor = await this.subcontractorRepository.findOne({
-        where: { id: subcontractorId },
-      });
-      if (!subcontractor) {
-        throw new NotFoundException(
-          `Subcontractor with ID ${subcontractorId} not found`,
-        );
+      if (subcontractor) {
+        const existingSubcontractor =
+          await this.subcontractorRepository.findOne({
+            where: { id: subcontractor.id },
+          });
+        if (!existingSubcontractor) {
+          throw new NotFoundException(
+            `Subcontractor with ID ${subcontractor.id} not found`,
+          );
+        }
       }
 
       // Find customer
-      const customer = await this.customerRepository.findOne({
-        where: { id: customerId },
-      });
-      if (!customer) {
-        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+      if (customer) {
+        const existingCustomer = await this.customerRepository.findOne({
+          where: { id: customer.id },
+        });
+        if (!existingCustomer) {
+          throw new NotFoundException(
+            `Customer with ID ${customer.id} not found`,
+          );
+        }
       }
 
       // Get the new PO number
       const newPONumber = await this.generatePONumber(); // Call the function to generate PO number
 
       // Create purchase order
-      const purchaseOrder = this.purchaseOrderRepository.create({
+      const purchaseOrder = await this.purchaseOrderRepository.save({
         ...rest,
         subcontractor,
         customer,
         number: newPONumber,
       });
-
-      await this.purchaseOrderRepository.save(purchaseOrder);
 
       return purchaseOrder;
     } catch (error) {
@@ -147,29 +153,29 @@ export class PurchaseOrdersService {
   ): Promise<PurchaseOrder> {
     try {
       const purchaseOrder = await this.findById(id);
-      const { subcontractorId, customerId, ...rest } = updatePurchaseOrderDto;
+      const { subcontractor, customer, ...rest } = updatePurchaseOrderDto;
 
       // Update subcontractor (if provided)
-      if (subcontractorId !== undefined) {
+      if (subcontractor !== undefined) {
         purchaseOrder.subcontractor =
           await this.subcontractorRepository.findOne({
-            where: { id: subcontractorId },
+            where: { id: subcontractor.id },
           });
         if (!purchaseOrder.subcontractor) {
           throw new NotFoundException(
-            `Subcontractor with ID ${subcontractorId} not found`,
+            `Subcontractor with ID ${subcontractor.id} not found`,
           );
         }
       }
 
       // Update customer (if provided)
-      if (customerId !== undefined) {
+      if (customer !== undefined) {
         purchaseOrder.customer = await this.customerRepository.findOne({
-          where: { id: customerId },
+          where: { id: customer.id },
         });
         if (!purchaseOrder.customer) {
           throw new NotFoundException(
-            `Customer with ID ${customerId} not found`,
+            `Customer with ID ${customer.id} not found`,
           );
         }
       }
@@ -233,15 +239,18 @@ export class PurchaseOrdersService {
         },
       });
 
+      let newPONumber: string;
       // Extract the last number part and increment it
-      let lastNumber = 0;
       if (lastPO) {
         const lastNumberString = lastPO.number.split('/')[0].replace(/\D/g, ''); // ✅ Remove all non-numeric characters
-        lastNumber = parseInt(lastNumberString, 10) || 0; // ✅ Ensure a valid number, default to 0
+        const lastNumber = parseInt(lastNumberString, 10) || 0; // ✅ Ensure a valid number, default to 0
+        // Generate the new PO number (without "PO" prefix)
+        newPONumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
+      } else {
+        // ✅ ถ้ายังไม่มีเลข PO มาก่อน ให้เริ่มที่ `001`
+        newPONumber = `001/${currentYear}`;
       }
 
-      // Generate the new PO number (without "PO" prefix)
-      const newPONumber = `${String(lastNumber + 1).padStart(3, '0')}/${currentYear}`;
       return newPONumber;
     } catch (error) {
       throw new InternalServerErrorException(

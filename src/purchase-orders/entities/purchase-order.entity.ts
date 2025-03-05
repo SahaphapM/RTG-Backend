@@ -22,10 +22,10 @@ export class PurchaseOrder {
   @Column({ type: 'varchar', length: 255, nullable: true })
   name: string;
 
-  @Column({ type: 'varchar', length: 16, nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   qtNumber: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 64, nullable: true })
   taxId: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -53,7 +53,7 @@ export class PurchaseOrder {
   subcontractor: Subcontractor;
 
   @ManyToOne(() => Customer, (customer) => customer.purchaseOrders, {
-    nullable: false,
+    nullable: true,
   })
   customer: Customer;
 
@@ -63,18 +63,30 @@ export class PurchaseOrder {
   })
   orderDetails: OrderDetail[];
 
-  @Column({ type: 'decimal', scale: 2, nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   total: number;
 
-  @Column({ type: 'decimal', scale: 2, nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number) => value, // แปลงเป็นค่าเดิมก่อนบันทึกลง DB
+      from: (value: string) => parseFloat(value), // แปลงกลับเป็น number เมื่อดึงจาก DB
+    },
+  })
   discount: number;
 
-  @Column({ type: 'decimal', scale: 2, nullable: true })
+  @Column({ type: 'int', scale: 2, nullable: true })
   vat: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
