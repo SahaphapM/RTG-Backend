@@ -157,7 +157,7 @@ export class ProjectsService {
     id: number,
     updateProjectDto: UpdateProjectDto,
   ): Promise<Project> {
-    const { customer, projectItems, ...projectData } = updateProjectDto;
+    const { projectItems, ...projectData } = updateProjectDto;
 
     // Find existing project with projectItems and customer
     const project = await this.projectRepository.findOne({
@@ -170,17 +170,6 @@ export class ProjectsService {
     }
 
     // Validate customer if changed
-    if (customer && project.customer.id !== customer.id) {
-      const existingCustomer = await this.customerRepository.findOne({
-        where: { id: customer.id },
-      });
-      if (!customer) {
-        throw new NotFoundException(
-          `Customer with ID ${customer.id} not found`,
-        );
-      }
-      project.customer = existingCustomer;
-    }
 
     // Delete all existing ProjectItems for this project
     await this.projectItemRepository.delete({ project: { id } });
