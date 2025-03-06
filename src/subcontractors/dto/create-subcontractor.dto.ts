@@ -17,10 +17,10 @@ export class CreateSubcontractorDto {
   })
   description: string;
 
-  @IsOptional()
-  @IsString()
-  @Length(0, 24, { message: 'Type must be between 0 and 24 characters long' })
-  type?: string;
+  // @IsOptional()
+  // @IsString()
+  // @Length(0, 24, { message: 'Type must be between 0 and 24 characters long' })
+  // type?: string;
 
   @IsOptional()
   @IsString()

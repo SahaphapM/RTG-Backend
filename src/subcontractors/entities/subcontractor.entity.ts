@@ -20,8 +20,8 @@ export class Subcontractor {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'varchar', length: 24, nullable: true })
-  type: string | null; // Type of subcontractor (e.g., supplier, contractor), can be null
+  // @Column({ type: 'varchar', length: 24, nullable: true })
+  // type: string | null; // Type of subcontractor (e.g., supplier, contractor), can be null
 
   @Column({ type: 'text', nullable: true })
   address: string | null; // Address of the subcontractor, can be null
