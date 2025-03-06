@@ -36,6 +36,9 @@ export class CreateProjectDto {
   endDate: string | null;
 
   @IsOptional()
+  status: string | null;
+
+  @IsOptional()
   customer: Partial<Customer> | null;
 
   @IsOptional()

@@ -11,6 +11,12 @@ export class CreateSubcontractorDto {
   @Length(0, 64, { message: 'Name must be between 0 and 64 characters long' })
   name: string;
 
+  @IsString()
+  @Length(0, 600, {
+    message: 'Description must be between 0 and 500 characters long',
+  })
+  description: string;
+
   @IsOptional()
   @IsString()
   @Length(0, 24, { message: 'Type must be between 0 and 24 characters long' })

@@ -33,6 +33,9 @@ export class Project {
   @Column({ type: 'date', nullable: true })
   endDate: Date | null; // End date of the project, can be null
 
+  @Column({ type: 'varchar', length: 24, nullable: true })
+  status: string; // Project number
+
   @Column({
     type: 'decimal',
     precision: 10,
