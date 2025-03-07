@@ -10,6 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { OrderDetail } from './orderDetail.entity';
+import { Project } from 'src/projects/entities/project.entity';
 
 @Entity('PurchaseOrder')
 export class PurchaseOrder {
@@ -51,6 +52,11 @@ export class PurchaseOrder {
     },
   )
   subcontractor: Subcontractor;
+
+  @ManyToOne(() => Project, (project) => project.purchaseOrders, {
+    nullable: true,
+  })
+  project: Project;
 
   @ManyToOne(() => Customer, (customer) => customer.purchaseOrders, {
     nullable: true,

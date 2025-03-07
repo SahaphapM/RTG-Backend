@@ -9,6 +9,7 @@ import {
 import { Type } from 'class-transformer';
 import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
 import { Customer } from 'src/customers/entities/customer.entity';
+import { Project } from 'src/projects/entities/project.entity';
 
 export class CreatePurchaseOrderDto {
   @IsOptional()
@@ -40,6 +41,9 @@ export class CreatePurchaseOrderDto {
 
   @IsOptional()
   customer: Partial<Customer> | null;
+
+  @IsOptional()
+  project: Partial<Project> | null;
 
   @IsOptional()
   @IsArray()

@@ -12,6 +12,7 @@ import { ProjectItem } from './project-item.entity';
 import { Expose } from 'class-transformer';
 import { JobQuotation } from 'src/job-quotations/entities/job-quotation.entity';
 import { Certificate } from 'src/certificates/entities/certificate.entity';
+import { PurchaseOrder } from 'src/purchase-orders/entities/purchase-order.entity';
 
 @Entity('Project')
 export class Project {
@@ -77,4 +78,9 @@ export class Project {
     nullable: true,
   })
   certificates: Certificate[];
+
+  @OneToMany(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.project, {
+    nullable: true,
+  })
+  purchaseOrders: PurchaseOrder[];
 }

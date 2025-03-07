@@ -33,6 +33,8 @@ export class PurchaseOrdersService {
         ? [
             { name: Like(`%${search}%`) }, // Match number
             { subcontractor: { name: Like(`%${search}%`) } }, // Match subcontractor name
+            { customer: { name: Like(`%${search}%`) } }, // Match customer name
+            { project: { name: Like(`%${search}%`) } }, // Match project name
             { number: Like(`%${search}%`) },
           ]
         : [];
@@ -45,6 +47,12 @@ export class PurchaseOrdersService {
         relations: {
           subcontractor: true,
           customer: true,
+          project: true,
+        },
+        select: {
+          subcontractor: { id: true, name: true },
+          customer: { id: true, name: true },
+          project: { id: true, name: true },
         },
       });
 
@@ -69,6 +77,7 @@ export class PurchaseOrdersService {
         subcontractor: true,
         customer: true,
         orderDetails: true,
+        project: true,
       },
     });
     if (!purchaseOrder) {
