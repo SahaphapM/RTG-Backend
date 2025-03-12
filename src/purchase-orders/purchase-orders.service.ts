@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import { PurchaseOrder } from './entities/purchase-order.entity';
 import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
 import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
@@ -29,15 +29,18 @@ export class PurchaseOrdersService {
     try {
       const { page, limit, search, sortBy, order } = query;
 
-      const whereCondition = search
-        ? [
-            { name: Like(`%${search}%`) }, // Match number
-            { subcontractor: { name: Like(`%${search}%`) } }, // Match subcontractor name
-            { customer: { name: Like(`%${search}%`) } }, // Match customer name
-            { project: { name: Like(`%${search}%`) } }, // Match project name
-            { number: Like(`%${search}%`) },
-          ]
-        : [];
+      const searchValue = !isNaN(Number(search)) ? Number(search) : null;
+
+      const whereCondition = [
+        { number: Like(`%${search}%`) }, // ค้นหาเลข PO
+        { name: Like(`%${search}%`) }, // ค้นหาชื่อ PO
+        ...(searchValue !== null
+          ? [{ total: Between(searchValue - 1, searchValue + 1) }]
+          : []), // ค้นหา total ในช่วง
+        { subcontractor: { name: Like(`%${search}%`) } }, // ค้นหาชื่อผู้รับเหมา
+        { customer: { name: Like(`%${search}%`) } }, // ค้นหาชื่อลูกค้า
+        { project: { name: Like(`%${search}%`) } }, // ค้นหาชื่อโครงการ
+      ];
 
       const [data, total] = await this.purchaseOrderRepository.findAndCount({
         where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists

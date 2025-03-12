@@ -27,6 +27,7 @@ export class SubcontractorsService {
             { name: Like(`%${search}%`) },
             { email: Like(`%${search}%`) },
             { contact: Like(`%${search}%`) },
+            { description: Like(`%${search}%`) },
           ]
         : {},
       order: { [sortBy]: order }, // Sorting

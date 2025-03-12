@@ -20,7 +20,9 @@ export class CustomersService {
       ? [
           { name: Like(`%${search}%`) }, // Match number
           { email: Like(`%${search}%`) }, // Match email
-          { contact: Like(`%${search}%`) },
+          // { contact: Like(`%${search}%`) },
+          { agentName: Like(`%${search}%`) },
+          { agentContact: Like(`%${search}%`) },
         ]
       : [];
 

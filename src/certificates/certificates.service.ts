@@ -7,12 +7,11 @@ import { CreateCertificateDto } from './dto/create-certificate.dto';
 import { UpdateCertificateDto } from './dto/update-certificate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Certificate } from './entities/certificate.entity';
-import { Like, MoreThan, Repository } from 'typeorm';
-import path from 'path';
-import * as fs from 'fs';
+import { Like, Repository } from 'typeorm';
 import { Subcontractor } from 'src/subcontractors/entities/subcontractor.entity';
 import { Project } from 'src/projects/entities/project.entity';
 import { QueryDto } from 'src/paginations/pagination.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class CertificatesService {
@@ -90,11 +89,11 @@ export class CertificatesService {
   }
   async findAll(query: QueryDto) {
     const { page, limit, search, sortBy, order } = query;
+    console.log(query);
 
     const whereCondition = search
       ? [
           { name: Like(`%${search}%`) },
-          { date: MoreThan(new Date(search)) }, // Assuming search is a date string
           { subcontractor: { name: Like(`%${search}%`) } },
           { project: { name: Like(`%${search}%`) } },
         ]

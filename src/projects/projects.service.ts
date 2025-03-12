@@ -6,12 +6,17 @@ import {
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import {
+  Between,
+  LessThanOrEqual,
+  Like,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { Project } from './entities/project.entity';
 import { Customer } from 'src/customers/entities/customer.entity';
 import { ProjectItem } from './entities/project-item.entity';
 import { Item } from 'src/items/entities/item.entity';
-import { plainToInstance } from 'class-transformer';
 import { QueryDto } from 'src/paginations/pagination.dto';
 
 @Injectable()
@@ -31,14 +36,14 @@ export class ProjectsService {
     try {
       const { page, limit, search, sortBy, order } = query;
 
-      const whereCondition = search
-        ? [
-            { number: Like(`%${search}%`) }, // Match number
-            { name: Like(`%${search}%`) }, // Match name
-            { customer: { name: Like(`%${search}%`) } }, // Match subcontractor name
-            { total: Like(`%${search}%`) },
-          ]
-        : [];
+      const searchValue = isNaN(Number(search)) ? null : Number(search);
+
+      const whereCondition = [
+        { number: Like(`%${search}%`) }, // ค้นหาเลขโครงการ
+        { name: Like(`%${search}%`) }, // ค้นหาชื่อโครงการ
+        ...(searchValue !== null ? [{ totalProjectPrice: searchValue }] : []), // ค้นหาราคาที่ตรงกัน
+        { customer: { name: Like(`%${search}%`) } }, // ค้นหาชื่อลูกค้า
+      ];
 
       const [data, total] = await this.projectRepository.findAndCount({
         where: whereCondition.length > 0 ? whereCondition : {}, // Apply OR condition if search exists

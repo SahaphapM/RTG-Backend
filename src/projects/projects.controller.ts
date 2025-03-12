@@ -28,7 +28,6 @@ export class ProjectsController {
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() query: QueryDto) {
-    console.log(query);
     return await this.projectService.findAll(query);
   }
 
