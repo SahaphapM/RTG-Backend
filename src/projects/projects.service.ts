@@ -74,7 +74,7 @@ export class ProjectsService {
     const project = await this.projectRepository.findOne({
       where: { id },
       relations: {
-        projectItems: { item: true },
+        projectItems: true,
         customer: true,
         jobQuotations: true,
       },
@@ -107,17 +107,8 @@ export class ProjectsService {
       // Validate items and prepare ProjectItems
       const projectItemsList: ProjectItem[] = [];
       for (const projectItem of projectItems) {
-        const item = await this.itemRepository.findOne({
-          where: { id: projectItem.itemId },
-        });
-        if (!item) {
-          throw new NotFoundException(
-            `Item with ID ${projectItem.itemId} not found`,
-          );
-        }
-
         const newProjectItem = await this.projectItemRepository.save({
-          item,
+          name: projectItem.name,
           quantity: projectItem.quantity,
           price: projectItem.price,
           totalPrice: calculateTotalPrice(
@@ -167,54 +158,51 @@ export class ProjectsService {
     // Find existing project with projectItems and customer
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: ['projectItems', 'customer', 'projectItems.item'],
+      relations: { projectItems: true, customer: true },
     });
 
     if (!project) {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
 
-    // Validate customer if changed
+    try {
+      // Delete all existing ProjectItems for this project
+      await this.projectItemRepository.delete({ project: { id } });
 
-    // Delete all existing ProjectItems for this project
-    await this.projectItemRepository.delete({ project: { id } });
+      // Prepare new ProjectItems
+      let totalProjectPrice = 0;
+      const newProjectItems: ProjectItem[] = [];
 
-    // Prepare new ProjectItems
-    let totalProjectPrice = 0;
-    const newProjectItems: ProjectItem[] = [];
+      for (const dto of projectItems) {
+        const totalPrice = dto.price * dto.quantity; // Use dto.price for custom price
+        totalProjectPrice += totalPrice;
 
-    for (const dto of projectItems) {
-      const item = await this.itemRepository.findOne({
-        where: { id: dto.itemId },
-      });
-      if (!item) {
-        throw new NotFoundException(`Item with ID ${dto.itemId} not found`);
+        newProjectItems.push(
+          this.projectItemRepository.create({
+            project,
+            name: dto.name,
+            price: dto.price,
+            quantity: dto.quantity,
+            totalPrice,
+          }),
+        );
       }
 
-      const totalPrice = dto.price * dto.quantity; // Use dto.price for custom price
-      totalProjectPrice += totalPrice;
+      // Save all new ProjectItems
+      project.projectItems =
+        await this.projectItemRepository.save(newProjectItems);
 
-      newProjectItems.push(
-        this.projectItemRepository.create({
-          project,
-          item,
-          price: dto.price,
-          quantity: dto.quantity,
-          totalPrice,
-        }),
+      // Update project fields
+      Object.assign(project, projectData);
+      project.totalProjectPrice = totalProjectPrice;
+
+      // Save updated project
+      return this.projectRepository.save(project);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to update project: ' + error.message,
       );
     }
-
-    // Save all new ProjectItems
-    project.projectItems =
-      await this.projectItemRepository.save(newProjectItems);
-
-    // Update project fields
-    Object.assign(project, projectData);
-    project.totalProjectPrice = totalProjectPrice;
-
-    // Save updated project
-    return this.projectRepository.save(project);
   }
 
   async delete(id: number) {

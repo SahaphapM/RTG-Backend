@@ -51,10 +51,10 @@ class ProjectItemDto {
   @IsOptional()
   id?: number;
 
-  @IsNumber()
   @IsOptional()
-  @IsNotEmpty()
-  itemId: number; // Reference to Item
+  @IsString()
+  @Length(0, 255, { message: 'Name must be between 0 and 255 characters long' })
+  name: string;
 
   @IsNumber()
   @IsOptional()

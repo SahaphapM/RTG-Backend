@@ -20,10 +20,4 @@ export class Item {
     },
   })
   price: number;
-
-  @OneToMany(() => ProjectItem, (projectItem) => projectItem.item, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  projectItems: ProjectItem[];
 }

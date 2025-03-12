@@ -9,14 +9,14 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Project } from './project.entity';
-import { Item } from '../../items/entities/item.entity';
-import { Exclude } from 'class-transformer';
-import { JobQuotation } from 'src/job-quotations/entities/job-quotation.entity';
 
 @Entity('ProjectItem')
 export class ProjectItem {
   @PrimaryGeneratedColumn()
   id: number; // Primary Key: Auto-incremented ID
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  name: string;
 
   @Column({ type: 'int', default: 1 })
   quantity: number; // Quantity of the item in the project
@@ -56,9 +56,4 @@ export class ProjectItem {
     onUpdate: 'CASCADE',
   })
   project: Project; // Foreign Key: Project associated with the item
-
-  @ManyToOne(() => Item, (item) => item.projectItems, {
-    cascade: true,
-  })
-  item: Item; // Foreign Key: Item associated with the project
 }
