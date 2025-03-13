@@ -28,9 +28,9 @@ export class CreatePurchaseOrderDto {
   @IsString()
   ourRef: string;
 
-  @IsOptional()
-  @IsString()
-  description: string;
+  // @IsOptional()
+  // @IsString()
+  // description: string;
 
   @IsOptional()
   @IsDateString()

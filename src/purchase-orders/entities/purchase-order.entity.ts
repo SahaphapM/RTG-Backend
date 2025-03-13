@@ -32,8 +32,8 @@ export class PurchaseOrder {
   @Column({ type: 'varchar', length: 255, nullable: true })
   ourRef: string;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
+  // @Column({ type: 'text', nullable: true })
+  // description: string;
 
   @Column({ type: 'date', nullable: true })
   date: Date;

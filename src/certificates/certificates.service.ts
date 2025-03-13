@@ -94,6 +94,7 @@ export class CertificatesService {
     const whereCondition = search
       ? [
           { name: Like(`%${search}%`) },
+          { description: Like(`%${search}%`) },
           { subcontractor: { name: Like(`%${search}%`) } },
           { project: { name: Like(`%${search}%`) } },
         ]
