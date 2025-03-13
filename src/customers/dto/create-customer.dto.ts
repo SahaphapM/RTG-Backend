@@ -17,6 +17,9 @@ export class CreateCustomerDto {
   // @IsEmail({}, { message: 'Email must be a valid email address' })
   email?: string;
 
+  @IsString()
+  taxId: string;
+
   @IsOptional()
   @IsString()
   agentName: string;

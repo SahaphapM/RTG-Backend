@@ -26,6 +26,9 @@ export class Customer {
   @Column({ type: 'varchar', length: 64, nullable: true })
   email: string | null; // Optional email address for communication
 
+  @Column({ type: 'varchar', length: 13, nullable: true })
+  taxId: string;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   agentName: string;
 
