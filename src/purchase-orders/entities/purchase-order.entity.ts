@@ -44,6 +44,15 @@ export class PurchaseOrder {
   @Column({ type: 'date', nullable: true })
   shippedDate: Date;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  shipPlace: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  startDate: Date;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  payment: string;
+
   @ManyToOne(
     () => Subcontractor,
     (subcontractor) => subcontractor.purchaseOrders,

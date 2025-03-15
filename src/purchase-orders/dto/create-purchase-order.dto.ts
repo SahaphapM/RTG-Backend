@@ -28,10 +28,6 @@ export class CreatePurchaseOrderDto {
   @IsString()
   ourRef: string;
 
-  // @IsOptional()
-  // @IsString()
-  // description: string;
-
   @IsOptional()
   @IsDateString()
   date: string;
@@ -69,6 +65,18 @@ export class CreatePurchaseOrderDto {
   @IsOptional()
   @IsDateString()
   shippedDate: string | null;
+
+  @IsOptional()
+  @IsString()
+  shipPlace: string | null;
+
+  @IsOptional()
+  @IsString()
+  startDate: string | null;
+
+  @IsOptional()
+  @IsString()
+  payment: string | null;
 }
 
 export class CreateOrderDetailDto {
