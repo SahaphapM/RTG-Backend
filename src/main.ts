@@ -13,7 +13,7 @@ async function bootstrap() {
 
   // Enable CORS for Frontend Access
   app.enableCors({
-    origin: 'http://localhost:3000', // ✅ เปลี่ยนเป็น Frontend ของคุณ
+    origin: process.env.FRONTEND_PORT || 'http://localhost:3000', // ✅ เปลี่ยนเป็น Frontend ของคุณ
     credentials: true, // ✅ อนุญาตให้ส่ง Cookies ไปกับ Request
   });
 
@@ -22,7 +22,10 @@ async function bootstrap() {
   app.use(
     '/uploads',
     (req, res, next) => {
-      res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Allow all origins
+      res.header(
+        'Access-Control-Allow-Origin',
+        process.env.FRONTEND_PORT || 'http://localhost:3000',
+      ); // Allow all origins
       res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.setHeader('Access-Control-Allow-Credentials', 'true'); // ✅ Required for `credentials: "include"`
@@ -39,7 +42,7 @@ async function bootstrap() {
   );
 
   // await app.listen(process.env.PORT);
-  await app.listen(process.env.PORT || 3001, '0.0.0.0');
+  await app.listen(process.env.PORT || 3001);
 }
 
 bootstrap();
