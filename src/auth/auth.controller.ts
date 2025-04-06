@@ -30,7 +30,7 @@ export class AuthController {
     res.cookie('access_token', token.access_token, {
       httpOnly: true, // ❌ ป้องกัน XSS
       secure: true, // ✅ ใช้ HTTPS เท่านั้น
-      sameSite: 'strict', // ✅ ป้องกัน CSRF
+      sameSite: 'none', // ✅ ให้ cookie ถูกส่งระหว่าง frontend-backend ต่าง domain
       maxAge: 1000 * 60 * 60 * 24 * 365, // ✅ Token หมดอายุใน 365 วัน
     });
 
